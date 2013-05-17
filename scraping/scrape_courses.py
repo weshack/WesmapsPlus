@@ -97,6 +97,11 @@ def get_course_info_from_course_page(url):
             section['enrollmentLimit'] = 0
 
         try:
+            section['seatsAvailable'] = int( re.findall('Seats Available: ([^<]*)', content)[0] )
+        except:
+            section['seatsAvailable'] = 0
+
+        try:
             section['GRAD_Major'] = re.findall('GRAD: ([^<]*)', content)[0]
             section['SR_NonMajor'] = re.findall('SR non-major: ([^<]*)', content)[0]
             section['SR_Major'] = re.findall('SR major: ([^<]*)', content)[0]
@@ -107,6 +112,24 @@ def get_course_info_from_course_page(url):
             section['permissionRequired'] = False
         except:
             section['permissionRequired'] = True
+
+        majorReadingsSelector = sectionSelector.select("tr/td")[1]
+        try:
+            section['major_readings'] = '\n'.join( majorReadingsSelector.select("text()").extract() )
+        except:
+            section['major_readings'] = ''
+
+        assignmentsSelector = sectionSelector.select("tr/td")[2]
+        try:
+            section['assignments_and_examinations'] = '\n'.join( assignmentsSelector.select("text()").extract() )
+        except:
+            section['assignments_and_examinations'] = ''
+            
+        additionalRequirementsSelector = sectionSelector.select("tr/td")[3]
+        try:
+            section['additional_requirements'] = '\n'.join( additionalRequirementsSelector.select("text()").extract() )
+        except:
+            section['additional_requirements'] = ''        
 
         course['sections'].append(section)
 
