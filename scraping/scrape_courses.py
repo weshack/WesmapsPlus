@@ -14,6 +14,25 @@ year_pages = {
     '2013-2014': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html"
 }
 
+term_codes = {
+    'Fall 2006': "1069",
+    'Fall 2007': "1079",
+    'Fall 2008': "1089",
+    'Fall 2009': "1099",
+    'Fall 2010': "1109",
+    'Fall 2011': "1119",
+    'Fall 2012': "1129",
+    'Fall 2013': "1139",
+    'Spring 2007': '1071',
+    'Spring 2008': '1081',
+    'Spring 2009': '1091',
+    'Spring 2010': '1101',
+    'Spring 2011': '1111',
+    'Spring 2012': '1121',
+    'Spring 2013': '1131',
+    'Spring 2014': '1141',
+}
+
 def get_courses_offered_urls_from_year_page(url):
     c = requests.get(url).content
     selector = HtmlXPathSelector(text = c)
@@ -35,6 +54,9 @@ def get_course_urls_from_courses_offered_page(url):
         course_links = []
     return map(lambda l: "https://iasext.wesleyan.edu/regprod/" + l, course_links)
 
+def get_url_for_course(courseid, term):
+    return "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?crse=%s&term=%s" % (courseid, term)
+
 def get_course_info_from_course_page(url):
     c = requests.get(url).content
     course = {}
@@ -43,7 +65,7 @@ def get_course_info_from_course_page(url):
     course['department'] = selector.select("//td/b/a/text()").extract()[0]
     course['number'] = selector.select("//td/b/text()").extract()[0].split(' ')[1]
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
-
+    course['term_code'] = term_codes[course['semester']]
     course['url'] = url
     course['courseid'] = url[60:66]
 
@@ -133,8 +155,7 @@ def get_course_info_from_course_page(url):
 
         course['sections'].append(section)
 
-    return course    
-
+    return course
 
 def get_all_courses():
     courses = []
@@ -150,4 +171,4 @@ def get_all_courses():
 
 if __name__ == '__main__':
     courses = get_all_courses()
-    open('courses.json', 'w').write(simplejson.dumps(courses))
+    open('courses.json').write(simplejson.dumps(courses))
