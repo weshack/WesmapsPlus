@@ -150,4 +150,4 @@ def get_all_courses():
 
 if __name__ == '__main__':
     courses = get_all_courses()
-    open('courses.json').write(simplejson.dumps(courses))
+    open('courses.json', 'w').write(simplejson.dumps(courses))
