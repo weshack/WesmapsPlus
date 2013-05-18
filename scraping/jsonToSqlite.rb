@@ -16,7 +16,8 @@ number TEXT,
 courseid INTEGER,
 semester TEXT,
 department TEXT,
-gradingMode TEXT
+gradingMode TEXT,
+description TEXT
 );
 SQL
 
@@ -37,17 +38,33 @@ GRAD_major TEXT,
 additional_requirements TEXT,
 times TEXT,
 seatsAvailable TEXT,
-professor INTEGER,
+professor TEXT,
 location TEXT,
 major_readings TEXT,
 enrollmentLimit INTEGER,
 assignments_and_examinations TEXT
 );
 SQL
+courses.execute "DROP TABLE professors"
+courses.execute <<-SQL
+CREATE TABLE professors (
+_uid INTEGER PRIMARY KEY,
+name TEXT,
+rating REAL
+);
+SQL
 
 primaryKey = 0
+professor_data = JSON.parse(IO.read("professors_with_ratings.json"))
+professor_data.each do | prof |
+	rating = -1
+	rating = prof['rating'].to_s if prof['rating']
+	courses.execute("INSERT INTO professors VALUES ( #{primaryKey.to_s}, \"#{prof['name'].gsub('"',"'")}\", #{rating} );")
+	primaryKey += 1
+end
+primaryKey = 0
 sPk = 0
-total = 20026
+total = json_data.size
 json_data.each do | course |
 	courseid = course['courseid']
 	course['sections'].each do | section |
@@ -108,9 +125,14 @@ json_data.each do | course |
 		sqlStatement << section['times']
 		sqlStatement << '", "'
 		sqlStatement << section['seatsAvailable'].to_s
-		sqlStatement << '", '
-		sqlStatement << "0" #section['professor']
-		sqlStatement << ', "'
+		sqlStatement << '", "'
+		profs = []
+		section['instructors'].each do | prof |
+			res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'").gsub(',',', ')}\"")
+			profs << res[0][0].to_s if res
+		end
+		sqlStatement << profs.join(';')
+		sqlStatement << '", "'
 		sqlStatement << section['location']
 		sqlStatement << '", "'
 		sqlStatement << section['major_readings'].gsub("\n",";").gsub('"',"'")
@@ -144,9 +166,11 @@ json_data.each do | course |
 	sqlStatement << course['department']
 	sqlStatement << '", "'
 	sqlStatement << course['gradingMode']
+	sqlStatement << '", "'
+	sqlStatement << course['description'].gsub('"',"'")
 	sqlStatement << '");'
 	courses.execute(sqlStatement)
 	primaryKey += 1
-	printf("\r%0.3f", primaryKey.to_f/total.to_f * 100)
+	printf("\r%0.3f%%", primaryKey.to_f/total.to_f * 100)
 
 end
