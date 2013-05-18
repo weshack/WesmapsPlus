@@ -1,6 +1,9 @@
 *.pyc
 #*py
-static/js
 static/stylesheets
-static/.sass-cache
+static/.sass-cache/*
+.DS_Store
  
+
+/static/js/app.js
+*.sassc

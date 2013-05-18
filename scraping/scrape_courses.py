@@ -23,6 +23,8 @@ seen = {}
 def seen_course(cid, term):
     return (cid + "," + term) in seen
 
+professors = []
+
 year_pages = {
     '2006-2007': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1069",
     '2007-2008': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1079",
@@ -214,6 +216,10 @@ def get_course_info_from_course_page(url):
         try:
             section['instructors'] = instructorsSelector.select("a/text()").extract()
             section['instructors'] = map(lambda inst: inst.strip(' '), section['instructors'])
+
+            for instructor in section['instructors']:
+                if not (instructor in professors):
+                    professors.append(instructor)
         except:
             section['instructors'] = []
 
@@ -258,3 +264,4 @@ if __name__ == '__main__':
     #courses = get_all_courses()
     courses = get_current_courses()
     open('courses.json', 'w').write(simplejson.dumps(courses))
+    open('instructors.json', 'w').write(simplejson.dumps(professors))
