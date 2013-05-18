@@ -15,6 +15,14 @@ year_pages = {
 }
 
 term_codes = {
+    'Summer 2006': '1066',
+    'Summer 2007': '1076',
+    'Summer 2008': '1086',
+    'Summer 2009': '1096',
+    'Summer 2010': '1106',
+    'Summer 2011': '1116',
+    'Summer 2012': '1126',
+    'Summer 2013': '1136',
     'Fall 2006': "1069",
     'Fall 2007': "1079",
     'Fall 2008': "1089",
@@ -65,12 +73,17 @@ def get_course_info_from_course_page(url):
     course['department'] = selector.select("//td/b/a/text()").extract()[0]
     course['number'] = selector.select("//td/b/text()").extract()[0].split(' ')[1]
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
-    course['term_code'] = term_codes[course['semester']]
+
+    try:
+        course['term_code'] = term_codes[course['semester']]
+    except:
+        course['term_code'] = ''
+
     course['url'] = url
     course['courseid'] = url[60:66]
 
     try:
-        course['credit'] = int( re.findall('Credit: </b>([^<]*)', c)[0] )
+        course['credit'] = float( re.findall('Credit: </b>([^<]*)', c)[0] )
     except:
         course['credit'] = 1
 
@@ -188,7 +201,7 @@ def get_all_courses():
             course_urls = get_course_urls_from_courses_offered_page(courses_offered_url)
             for course_url in course_urls:
                 course = get_course_info_from_course_page(course_url)
-                print "Adding", course['title'], get_all_instructors_for_course(course)
+                print "Adding", course['title'], course['credit'], get_all_instructors_for_course(course)
                 courses.append(get_course_info_from_course_page(course_url))
     return courses
 
