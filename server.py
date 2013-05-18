@@ -1,5 +1,6 @@
 import uuid
 import simplejson
+import scheduling
 
 from flask import Flask, render_template, request, jsonify, g
 from db import search_for_course_by_title, connect_db, get_courses_from_cursor
@@ -45,7 +46,11 @@ def search():
 
 @app.route("/schedule")
 def get_schedule():
-    pass
+    sections = get_user_info(session['userid'])['sections']
+	times = {}
+	for section in sections:
+		times['section'] = convertTimeStringToDictionary(get_times_for_section(g.db, section))
+	return simplejson.dumps(times)
 
 @app.route("/schedule", methods = ['PUT'])
 def update_schedule():
