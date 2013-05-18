@@ -1,13 +1,23 @@
-from flask import Flask, render_template, request, jsonify, g
-
-import pymongo
 import uuid
 import simplejson
 
+from flask import Flask, render_template, request, jsonify, g
 from db import search_for_course_by_title, connect_db, get_courses_from_cursor
+from pymongo import MongoClient
+
+client = MongoClient()
+db = client.wesmaps
+users = client.wesmaps.users
 
 def generate_user_id():
     return str(uuid.uuid4())
+
+def create_user():
+    user_id = generate_user_id()
+    users.insert({'id': user_id, 
+                  'schedule': [],
+                  'starred': []})
+    return user_id
 
 app = Flask(__name__)
 
