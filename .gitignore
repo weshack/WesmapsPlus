@@ -3,7 +3,6 @@
 static/stylesheets
 static/.sass-cache/*
 .DS_Store
- 
-
-/static/js/app.js
-*.sassc
+ *.sassc
+/static/js/*.js
+/static/js/courses.js
