@@ -1,13 +1,14 @@
-courseTemplate = ({code, name, professor}) ->
+courseTemplate = ({id, code, title, professor}) ->
   """
   <div class='course-result'>
-    <p class='course-result-code'>#{code}</p
-    <p class='course-result-name'>#{name}</p>
+    <a href='/course?id=#{id}'><p class='course-result-code'>#{code}</p>
+    <p class='course-result-name'>#{title}</p></a>
     <p class='course-result-professor'>#{formatName professor}</p>
   </div>
   """
 
-formatName = (name) ->
+formatName = (name = 'STAFF') ->
+  return name if name == 'STAFF'
   [last, first] = name.split ','
   "#{first} #{last}"
 
@@ -16,17 +17,14 @@ updateCourseResults = (results) ->
   for result in results
     $("#course-results").append courseTemplate result
 
-autocomplete = (term) ->
-  # in lieu of the actual searching code
-  [{code: "ARHA385", name: "European Architecture to 1750", professor: "Siry,Joseph M."},
-  {code: "ARHA385", name: "European Architecture to 1750", professor: "Siry,Joseph M."},
-  {code: "ARHA385", name: "European Architecture to 1750", professor: "Siry,Joseph M."},
-  {code: "ARHA385", name: "European Architecture to 1750", professor: "Siry,Joseph M."}]
+autocomplete = (term, cb) ->
+  $.getJSON '/search_by_title', name: term, (results) ->
+    cb results
 
 $ ->
-  $("#course-search").on 'input', ->
-    courseResults = autocomplete @value
-    updateCourseResults courseResults
+  $("#course-search").on 'keyup', ->
+    autocomplete @value, (courseResults) ->
+      updateCourseResults courseResults
 
 
 

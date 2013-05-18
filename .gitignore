@@ -2,5 +2,6 @@
 #*py
 static/js
 static/stylesheets
-static/.sass-cache
+static/.sass-cache/*
+.DS_Store
  

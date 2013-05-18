@@ -2,13 +2,19 @@
 var autocomplete, courseTemplate, formatName, updateCourseResults;
 
 courseTemplate = function(_arg) {
-  var code, name, professor;
-  code = _arg.code, name = _arg.name, professor = _arg.professor;
-  return "<div class='course-result'>\n  <p class='course-result-code'>" + code + "</p\n  <p class='course-result-name'>" + name + "</p>\n  <p class='course-result-professor'>" + (formatName(professor)) + "</p>\n</div>";
+  var code, id, professor, title;
+  id = _arg.id, code = _arg.code, title = _arg.title, professor = _arg.professor;
+  return "<div class='course-result'>\n  <a href='/course?id=" + id + "'><p class='course-result-code'>" + code + "</p>\n  <p class='course-result-name'>" + title + "</p></a>\n  <p class='course-result-professor'>" + (formatName(professor)) + "</p>\n</div>";
 };
 
 formatName = function(name) {
   var first, last, _ref;
+  if (name == null) {
+    name = 'STAFF';
+  }
+  if (name === 'STAFF') {
+    return name;
+  }
   _ref = name.split(','), last = _ref[0], first = _ref[1];
   return "" + first + " " + last;
 };
@@ -24,32 +30,18 @@ updateCourseResults = function(results) {
   return _results;
 };
 
-autocomplete = function(term) {
-  return [
-    {
-      code: "ARHA385",
-      name: "European Architecture to 1750",
-      professor: "Siry,Joseph M."
-    }, {
-      code: "ARHA385",
-      name: "European Architecture to 1750",
-      professor: "Siry,Joseph M."
-    }, {
-      code: "ARHA385",
-      name: "European Architecture to 1750",
-      professor: "Siry,Joseph M."
-    }, {
-      code: "ARHA385",
-      name: "European Architecture to 1750",
-      professor: "Siry,Joseph M."
-    }
-  ];
+autocomplete = function(term, cb) {
+  return $.getJSON('/search_by_title', {
+    name: term
+  }, function(results) {
+    return cb(results);
+  });
 };
 
 $(function() {
-  return $("#course-search").on('input', function() {
-    var courseResults;
-    courseResults = autocomplete(this.value);
-    return updateCourseResults(courseResults);
+  return $("#course-search").on('keyup', function() {
+    return autocomplete(this.value, function(courseResults) {
+      return updateCourseResults(courseResults);
+    });
   });
 });
