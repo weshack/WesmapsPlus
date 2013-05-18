@@ -56,10 +56,6 @@ def get_schedule():
 def update_schedule():
     pass
 
-@app.route("/schedule", methods = ['POST'])
-def create_schedule():
-    pass
-
 if __name__ == "__main__":
     app.debug = True
     app.run(host='0.0.0.0')
