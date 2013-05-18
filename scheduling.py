@@ -15,14 +15,17 @@ def convertTimeStringToDictionary(timeString):
 
 def noConflict(currSchedule, newCourse):
 	''' Tests two times, and returns True if they do not conflict '''
-	for newTimeK in newCourse:
-		newTimes = newCourse[newTimeK]
-		for newTime in newTimes:
-			for timeK in currSchedule:
-				times = currSchedule[TimeK]
-				for time in times:
-					if (time[0] >= newTime[0] and time[0] <= newTime[1]) or (newTime[0] >= time[0] and newTime[0] <= time[1]):
-						return False
+	for currCourseID in currSchedule:
+		currCourse = currSchedule[currCourseID]
+		for day in ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]:
+			if day in currCourse:
+				for courseTime in currCourse[day]:
+					startTime = courseTime[0]
+					endTime = courseTime[1]
+					if day in newCourse:
+						for time in newCourse[day]:
+							if (time[0] >= startTime and time[0] <= endTime) or (startTime >= time[0] and startTime <= time[1]):
+								return False
 	return True
 
 def timeRangeToMilitary(timeString):

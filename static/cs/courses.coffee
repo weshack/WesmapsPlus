@@ -1,6 +1,7 @@
 # We are assuming that the server will return
 # data like below:
 #{
+#	"_uid": 0,
 #	"genEdArea": "HA ART",
 #	"prerequisites": "None",
 #	"title": "European Architecture to 1750",
@@ -39,12 +40,19 @@
 #
 #
 
-data = JSON.parse($.getJSON('courses/'))
 #$("head").html('''
 #		<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
 #		<link href='styles.css' rel='stylesheet' type='text/css'> ''')
 
-		
+
+data = JSON.parse($.getJSON('courses/'))
+currSchedule = JSON.parse($.get_json("/schedule"))
+method = "POST"
+buttonMsg = "Add"
+if data['_uid'] in currSchedule
+	method = "DELETE"
+	buttonMsg = "Remove"
+	
 
 $("body").html('''
 <h1><div class=course-code>#{data['department']}#{data['number']}</div><span class=course-name>#{data['title']}</span></h1>
@@ -58,4 +66,8 @@ $("body").html('''
 	<div class=header>Prerequisites</div>
 	<div class=data>#{data['prerequisites']}</div>
 </div>
-<p>data['description']</p>''')
+<p>data['description']</p>
+<form name="input" action="/courses" method="#{method}">
+<input type="submit" value="#{buttonMsg}">
+<input type="hidden" name="sections" value="#{data['_uid']}">
+</form>''')
