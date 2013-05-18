@@ -50,10 +50,11 @@ autocomplete = function(term) {
 };
 
 $(function() {
-  return $("#course-search").on('input', function() {
+  $("#course-search").on('input', function() {
     var courseResults;
 
     courseResults = autocomplete(this.value);
     return updateCourseResults(courseResults);
   });
+  return window.theSchedule = new Schedule(window.theData, $('#schedule'));
 });

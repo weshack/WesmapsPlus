@@ -28,9 +28,4 @@ $ ->
     courseResults = autocomplete @value
     updateCourseResults courseResults
 
-
-
-
-
-
-
+  window.theSchedule = new Schedule(window.theData, $('#schedule'))

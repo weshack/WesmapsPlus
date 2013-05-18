@@ -3,6 +3,7 @@
 		<title>{% block title %}{% endblock %} - Wesmaps+</title>
 		<script src="/static/js/jquery-1.9.1.min.js"></script>
 		<script src="/static/js/underscore-min.js"></script>
+		<script src="/static/js/schedule.js"></script>
 		<script src="/static/js/app.js"></script>
 	  <link href="static/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
 	  <link href="static/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
@@ -15,11 +16,14 @@
 	<body>
 		<div id="wrapper">
 			{% block nav %}
-				<nav>
-					<div id="schedule"></div>
-					<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
-					<div id="filter-sidebar"></div>
-					<div id="course-results"></div>
+				<nav id="main">
+					<div class="relative">
+						<h1 id="title">WesMaps+</h1>
+						<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
+						<div id="schedule"></div>
+						<div id="filter-sidebar"></div>
+						<div id="course-results"></div>
+					</div>
 				</nav>
 			{% endblock %}
 				<div id="content">

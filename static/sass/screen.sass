@@ -1,5 +1,17 @@
 @import compass/reset
 
+* 
+  box-sizing: border-box
+
+.relative
+  position: relative
+  width: 100%
+  height: 100%
+
+html, body 
+  margin: 0
+  padding: 0
+
 body
   font-family: Helvetica
 
@@ -9,6 +21,56 @@ body
   bottom: 0
   left: 0
   right: 0
+
+  #content
+    padding-top: 48px
+
+nav#main 
+  position: fixed
+  width: 100%
+  height: 36px
+  border-bottom: 1px solid #444
+
+  h1#title
+    position: absolute
+    top: 0
+    left: 10px
+    font-weight: 300
+    font-size: 26px
+    line-height: 36px
+
+  #course-search
+    position: absolute
+    top: 0
+    left: 150px
+    margin: 0
+    height: 36px
+    line-height: 36px
+    width: 302px
+    box-shadow: none
+    border-bottom: 1px solid black
+
+  #schedule
+    position: absolute
+    top: 0
+    left: 500px
+    height: 100%
+    width: 300px
+
+    .day
+      width: 14.285714286%
+      height: 100%
+      display: inline-block
+      border-right: 1px solid #444
+
+      &:last-child
+        border-right: none
+
+      .mtg 
+        position: absolute
+        width: 100%
+        background-color: black
+
 
 .course-result
   display: inline-block
@@ -38,6 +100,3 @@ footer
   text-align: center
   width: 100%
   bottom: 5px
-
-  
-
