@@ -89,8 +89,13 @@ def get_course_info_from_course_page(url):
     course['number'] = selector.select("//td/b/text()").extract()[0].split(' ')[1]
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
 
+    descriptionSelector = None
+    for sel in selector.select("//td[@colspan='3']"):
+        if len(sel.select("br")):
+            descriptionSelector = sel
+
     try:
-        course['description'] = remove_tags(selector.select("//td[@colspan='3']/br").extract()[0]).strip('\n')
+        course['description'] = descriptionSelector.select("text()").extract()[0].strip('\n')
     except:    
         course['description'] = 'This course has no description.'
 
