@@ -9,13 +9,17 @@ def generate_user_id():
 
 def create_user():
     user_id = generate_user_id()
-    users.insert({'id': user_id, 
-                  'sections': [],
-                  'starred': []})
-    return user_id
+    user = {'id': user_id, 
+            'sections': [],
+            'starred': []}
+    users.insert(user)
+    return user
 
 def get_user_info(userid):
-    return users.find_one({'id': userid})
+    if user = users.find_one({'id': userid}):
+        return user
+    else:
+        return create_user()
 
 def update_user_schedule(userid, new_sections):
     return users.update({'id': userid}, {'$set': {'sections': new_sections}})
