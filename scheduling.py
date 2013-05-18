@@ -15,7 +15,8 @@ def convertTimeStringToDictionary(timeString):
 
 def noConflict(currSchedule, newCourse):
 	''' Tests two times, and returns True if they do not conflict '''
-	for currCourse in currSchedule:
+	for currCourseID in currSchedule:
+		currCourse = currSchedule[currCourseID]
 		for day in ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]:
 			if day in currCourse:
 				for courseTime in currCourse[day]:
