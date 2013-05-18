@@ -128,8 +128,8 @@ json_data.each do | course |
 		sqlStatement << '", "'
 		profs = []
 		section['instructors'].each do | prof |
-			res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'")}\"")
-			profs << res[0].to_s if res
+			res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'").gsub(',',', ')}\"")
+			profs << res[0][0].to_s if res
 		end
 		sqlStatement << profs.join(';')
 		sqlStatement << '", "'
