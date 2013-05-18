@@ -1,25 +1,33 @@
 <html>
 	<head>
-		{% block head %}
 		<title>{% block title %}{% endblock %} - Wesmaps+</title>
 		<script src="/static/js/jquery-1.9.1.min.js"></script>
 		<script src="/static/js/underscore-min.js"></script>
 		<script src="/static/js/app.js"></script>
+	  <link href="static/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	  <link href="static/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
+	  <!--[if IE]>
+	      <link href="/stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	  <![endif]-->
+		{% block head %}
 		{% endblock %}
 	</head>
 	<body>
 		<div id="wrapper">
-			<div id="schedule"></div>
-			<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
-			<div id="filter-sidebar"></div>
-			<div id="course-results"></div>
-			<div id="content">
-				{% block content %}
-
-				{% endblock %}
-			</div>
-			{% block footer %}
+			{% block nav %}
+				<nav>
+					<div id="schedule"></div>
+					<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
+					<div id="filter-sidebar"></div>
+					<div id="course-results"></div>
+				</nav>
+			{% endblock %}
+				<div id="content">
+					{% block content %}
+					{% endblock %}
+				</div>
 				<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
+			{% block footer %}
 			{% endblock %}
 		</div>
 	</body>
