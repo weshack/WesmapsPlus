@@ -2,7 +2,7 @@ import uuid
 import simplejson
 import scheduling
 
-from flask import Flask, render_template, request, jsonify, g
+from flask import Flask, render_template, request, jsonify, g, session
 from db import search_for_course_by_title, connect_db, get_courses_from_cursor
 from pymongo import MongoClient
 
@@ -52,10 +52,22 @@ def get_schedule():
 		times['section'] = convertTimeStringToDictionary(get_times_for_section(g.db, section))
 	return simplejson.dumps(times)
 
-@app.route("/schedule", methods = ['PUT'])
+@app.route("/schedule", methods = ['POST, DELETE'])
 def update_schedule():
-    pass
-
+	section = request.form['sections']
+	sections = get_user_info(session['userid'])['sections']
+	if request.method == 'DELETE' and section in sections: # Removing a course
+		sections = sections[:sections.index(section)] + sections[sections.index(section)+1:]
+	else: # Adding a course
+		allTimes = {}
+		for s in sections:
+			allTimes[s] = convertTimeStringToDictionary(get_times_for_section(g.db, s)
+		if noConflict(allTimes, convertTimeStringToDictionary(get_times_for_section(g.db, section))):
+			sections.append(section)
+	update_user_schedule(session['userid'], sections)
+	
+				
+		
 if __name__ == "__main__":
     app.debug = True
     app.run(host='0.0.0.0')
