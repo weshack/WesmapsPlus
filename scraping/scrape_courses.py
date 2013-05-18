@@ -67,7 +67,7 @@ def get_course_info_from_course_page(url):
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
     course['term_code'] = term_codes[course['semester']]
     course['url'] = url
-    course['courseid'] = url[60:66]a
+    course['courseid'] = url[60:66]
 
     try:
         course['credit'] = int( re.findall('Credit: </b>([^<]*)', c)[0] )
@@ -135,6 +135,7 @@ def get_course_info_from_course_page(url):
         except:
             section['permissionRequired'] = True
 
+
         majorReadingsSelector = sectionSelector.select("tr/td")[1]
         try:
             section['major_readings'] = '\n'.join( majorReadingsSelector.select("text()").extract() )
@@ -153,9 +154,31 @@ def get_course_info_from_course_page(url):
         except:
             section['additional_requirements'] = ''        
 
+        instructorsSelector = None
+
+        for sel in sectionSelector.select("tr/td"):
+            try:
+                if 'Instructor' in sel.select("b").extract()[0]:
+                    instructorsSelector = sel
+            except:
+                pass
+
+        try:
+            section['instructors'] = instructorsSelector.select("a/text()").extract()
+        except:
+            section['instructors'] = []
+
         course['sections'].append(section)
 
     return course
+
+def get_all_instructors_for_course(course):
+    instructors = []
+    for section in course['sections']:
+        for instructor in section['instructors']:
+            if not (instructor in instructors):
+                instructors.append(instructor)
+    return instructors
 
 def get_all_courses():
     courses = []
@@ -165,9 +188,9 @@ def get_all_courses():
             course_urls = get_course_urls_from_courses_offered_page(courses_offered_url)
             for course_url in course_urls:
                 course = get_course_info_from_course_page(course_url)
-                print "Adding", course['title']
+                print "Adding", course['title'], get_all_instructors_for_course(course)
                 courses.append(get_course_info_from_course_page(course_url))
-    return courses            
+    return courses
 
 if __name__ == '__main__':
     courses = get_all_courses()

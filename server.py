@@ -5,8 +5,24 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/search_by_name", methods = ['POST'])
+@app.route("/course")
+def course_page():
+    pass
+
+@app.route("/search_by_name")
 def search(name):
+    pass
+
+@app.route("/schedule")
+def get_schedule():
+    pass
+
+@app.route("/schedule", methods = ['PUT'])
+def update_schedule():
+    pass
+
+@app.route("/schedule", methods = ['POST'])
+def create_schedule():
     pass
 
 @app.route("/login", methods = ['POST'])

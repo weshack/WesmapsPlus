@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd static
+coffee -l -w -c -b -o js/ cs/ & 
