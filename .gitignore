@@ -1,3 +1,4 @@
 *.pyc
 #*py
-
+static/js
+static/stylesheets

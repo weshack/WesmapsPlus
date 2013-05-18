@@ -4,7 +4,7 @@ var autocomplete, courseTemplate, updateCourseResults;
 courseTemplate = function(_arg) {
   var code, name, professor;
   code = _arg.code, name = _arg.name, professor = _arg.professor;
-  return "<div class='course-result'>\n  <b class='course-result-code'>" + code + "</b\n  <p class='course-result-name'>" + name + "</p>\n  <p class='course-result-professor'>" + professor + "</p>\n</div>";
+  return "<div class='course-result'>\n  <p class='course-result-code'>" + code + "</p\n  <p class='course-result-name'>" + name + "</p>\n  <p class='course-result-professor'>" + professor + "</p>\n</div>";
 };
 
 updateCourseResults = function(results) {
@@ -21,6 +21,18 @@ updateCourseResults = function(results) {
 autocomplete = function(term) {
   return [
     {
+      code: "ARHA385",
+      name: "European Architecture to 1750",
+      professor: "Siry,Joseph M."
+    }, {
+      code: "ARHA385",
+      name: "European Architecture to 1750",
+      professor: "Siry,Joseph M."
+    }, {
+      code: "ARHA385",
+      name: "European Architecture to 1750",
+      professor: "Siry,Joseph M."
+    }, {
       code: "ARHA385",
       name: "European Architecture to 1750",
       professor: "Siry,Joseph M."
