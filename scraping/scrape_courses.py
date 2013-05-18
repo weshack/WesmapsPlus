@@ -3,6 +3,26 @@ import requests
 import simplejson
 from scrapy.selector import HtmlXPathSelector
 
+def remove_tags(t):
+    ret = ''
+    inTag = False
+    for s in t:
+        if s == '<':
+            inTag = True
+
+        elif s == '>':
+            inTag = False
+        
+        elif not inTag:
+            ret += s
+
+    return ret
+
+seen = {}
+
+def seen_course(cid, term):
+    return (cid + "," + term) in seen
+
 year_pages = {
     '2006-2007': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1069",
     '2007-2008': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1079",
@@ -74,13 +94,27 @@ def get_course_info_from_course_page(url):
     course['number'] = selector.select("//td/b/text()").extract()[0].split(' ')[1]
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
 
+    descriptionSelector = None
+    for sel in selector.select("//td[@colspan='3']"):
+        if len(sel.select("br")):
+            descriptionSelector = sel
+
+    try:
+        course['description'] = descriptionSelector.select("text()").extract()[0].strip('\n')
+    except:    
+        course['description'] = 'This course has no description.'
+
     try:
         course['term_code'] = term_codes[course['semester']]
     except:
         course['term_code'] = ''
 
+
     course['url'] = url
     course['courseid'] = url[60:66]
+
+    if seen_course(course['courseid'], course['term_code']):
+        return None
 
     try:
         course['credit'] = float( re.findall('Credit: </b>([^<]*)', c)[0] )
@@ -173,11 +207,13 @@ def get_course_info_from_course_page(url):
             try:
                 if 'Instructor' in sel.select("b").extract()[0]:
                     instructorsSelector = sel
+                    break
             except:
                 pass
 
         try:
             section['instructors'] = instructorsSelector.select("a/text()").extract()
+            section['instructors'] = map(lambda inst: inst.strip(' '), section['instructors'])
         except:
             section['instructors'] = []
 
@@ -193,6 +229,19 @@ def get_all_instructors_for_course(course):
                 instructors.append(instructor)
     return instructors
 
+def get_current_courses():
+    courses = []
+    url = "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html"
+    courses_offered_urls = get_courses_offered_urls_from_year_page(url)
+    for courses_offered_url in courses_offered_urls:
+        course_urls = get_course_urls_from_courses_offered_page(courses_offered_url)
+        for course_url in course_urls:
+            course = get_course_info_from_course_page(course_url)
+            print "Adding", course['title'], course['description'], get_all_instructors_for_course(course)
+            if course:
+                courses.append(course)
+    return courses
+
 def get_all_courses():
     courses = []
     for year_page_url in year_pages.values():
@@ -201,10 +250,11 @@ def get_all_courses():
             course_urls = get_course_urls_from_courses_offered_page(courses_offered_url)
             for course_url in course_urls:
                 course = get_course_info_from_course_page(course_url)
-                print "Adding", course['title'], course['credit'], get_all_instructors_for_course(course)
+                print "Adding", course['title'], course['description'], get_all_instructors_for_course(course)
                 courses.append(get_course_info_from_course_page(course_url))
     return courses
 
 if __name__ == '__main__':
-    courses = get_all_courses()
-    open('courses.json').write(simplejson.dumps(courses))
+    #courses = get_all_courses()
+    courses = get_current_courses()
+    open('courses.json', 'w').write(simplejson.dumps(courses))
