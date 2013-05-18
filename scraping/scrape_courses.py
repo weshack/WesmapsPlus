@@ -18,6 +18,11 @@ def remove_tags(t):
 
     return ret
 
+seen = {}
+
+def seen_course(cid, term):
+    return (cid + "," + term) in seen
+
 year_pages = {
     '2006-2007': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1069",
     '2007-2008': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1079",
@@ -104,8 +109,12 @@ def get_course_info_from_course_page(url):
     except:
         course['term_code'] = ''
 
+
     course['url'] = url
     course['courseid'] = url[60:66]
+
+    if seen_course(course['courseid'], course['term_code']):
+        return None
 
     try:
         course['credit'] = float( re.findall('Credit: </b>([^<]*)', c)[0] )
@@ -198,6 +207,7 @@ def get_course_info_from_course_page(url):
             try:
                 if 'Instructor' in sel.select("b").extract()[0]:
                     instructorsSelector = sel
+                    break
             except:
                 pass
 
@@ -228,7 +238,8 @@ def get_current_courses():
         for course_url in course_urls:
             course = get_course_info_from_course_page(course_url)
             print "Adding", course['title'], course['description'], get_all_instructors_for_course(course)
-            courses.append(get_course_info_from_course_page(course_url))
+            if course:
+                courses.append(course)
     return courses
 
 def get_all_courses():
