@@ -1,4 +1,3 @@
-import uuid
 import simplejson
 import scheduling
 
@@ -13,9 +12,6 @@ app = Flask(__name__)
 @app.before_request
 def before_request():
     g.db = connect_db()
-
-def get_user_info(userid):
-    pass
 
 @app.route("/")
 def index():
@@ -32,9 +28,29 @@ def search():
     else:
         return simplejson.dumps([])
 
+@app.route('/star', methods = ['GET', 'POST', 'DELETE'])
+def update_starred():
+    starred = set( get_user_info(session)['starred'] )
+    
+    if request.method == 'GET':
+        return simplejson.dumps(list(starred))
+
+    elif request.method == 'DELETE':
+        courseid = request.form['courseid']
+        starred.add(courseid)
+        update_user_starred(starred)
+        return simplejson.dumps(list(starred))
+
+    else:
+        courseid = request.form['courseid']
+        starred.add(courseid)
+        update_user_starred(starred)
+        return simplejson.dumps(list(starred))
+
 @app.route("/schedule", methods = ['GET', 'POST, DELETE'])
 def update_schedule():
-    sections = get_user_info(session)['sections']
+    userinfo = get_user_info(session)
+    sections = userinfo['sections']
 
     if request.method == 'GET':
         times = {}
@@ -42,20 +58,26 @@ def update_schedule():
             times['section'] = convertTimeStringToDictionary(get_times_for_section(g.db, section))
         return simplejson.dumps(times)
 
-    if request.method == 'DELETE' and section in sections: # Removing a course
+    elif request.method == 'DELETE' and section in sections: 
+        # Removing a course
         section = request.form['sections']
         sections = sections[:sections.index(section)] + sections[sections.index(section)+1:]
+        update_user_schedule(session['userid'], sections)
+        return 200
 
-    else: # Adding a course
+    else: 
+        # Adding a course
         section = request.form['sections']
         allTimes = {}
         for s in sections:
             allTimes[s] = convertTimeStringToDictionary(get_times_for_section(g.db, s))
             if noConflict(allTimes, convertTimeStringToDictionary(get_times_for_section(g.db, section))):
                 sections.append(section)
-                
+            else:
+                pass
+
     update_user_schedule(session['userid'], sections)
-				
+			
 	
 if __name__ == "__main__":
     app.secret_key = 'b6a7ab74af724b1e948b42a30c959cb8'
