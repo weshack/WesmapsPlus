@@ -219,7 +219,7 @@ def get_all_instructors_for_course(course):
     return instructors
 
 def get_current_courses():
-    url = "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html"m
+    url = "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html"
     courses_offered_urls = get_courses_offered_urls_from_year_page(url)
     for courses_offered_url in courses_offered_urls:
         course_urls = get_course_urls_from_courses_offered_page(courses_offered_url)
