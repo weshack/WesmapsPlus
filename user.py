@@ -15,11 +15,14 @@ def create_user():
     users.insert(user)
     return user
 
-def get_user_info(userid):
+def get_user_info(session):
+    userid = session['userid']
     if user = users.find_one({'id': userid}):
         return user
     else:
-        return create_user()
+        user = create_user()
+        session['userid'] = user['userid']
+        return user
 
 def update_user_schedule(userid, new_sections):
     return users.update({'id': userid}, {'$set': {'sections': new_sections}})
