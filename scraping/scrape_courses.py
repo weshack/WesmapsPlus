@@ -67,7 +67,7 @@ def get_course_info_from_course_page(url):
     course['semester'] = selector.select("//td/b/text()").extract()[1].replace('\n', '')
     course['term_code'] = term_codes[course['semester']]
     course['url'] = url
-    course['courseid'] = url[60:66]
+    course['courseid'] = url[60:66]a
 
     try:
         course['credit'] = int( re.findall('Credit: </b>([^<]*)', c)[0] )
