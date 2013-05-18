@@ -16,7 +16,7 @@ def remove_tags(t):
         elif not inTag:
             ret += s
 
-    return ret
+    return reta
 
 year_pages = {
     '2006-2007': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1069",
