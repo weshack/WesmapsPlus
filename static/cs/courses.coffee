@@ -46,13 +46,13 @@
 
 
 data = JSON.parse($.getJSON('courses/'))
-currSchedule = JSON.parse($.get_json("/schedule"))
+currSchedule = JSON.parse($.getJSON("/schedule"))
 method = "POST"
 buttonMsg = "Add"
 if data['_uid'] in currSchedule
 	method = "DELETE"
 	buttonMsg = "Remove"
-	
+
 
 $("body").html('''
 <h1><div class=course-code>#{data['department']}#{data['number']}</div><span class=course-name>#{data['title']}</span></h1>

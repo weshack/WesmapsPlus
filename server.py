@@ -15,7 +15,8 @@ def before_request():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    userinfo = get_user_info(session)
+    return render_template("index.html", sections = userinfo['sections'], starred = userinfo['starred'])
 
 @app.route("/search_by_title")
 def search():
@@ -77,7 +78,6 @@ def update_schedule():
                 pass
 
     update_user_schedule(session['userid'], sections)
-			
 	
 if __name__ == "__main__":
     app.secret_key = 'b6a7ab74af724b1e948b42a30c959cb8'
