@@ -3,9 +3,13 @@ courseTemplate = ({code, name, professor}) ->
   <div class='course-result'>
     <p class='course-result-code'>#{code}</p
     <p class='course-result-name'>#{name}</p>
-    <p class='course-result-professor'>#{professor}</p>
+    <p class='course-result-professor'>#{formatName professor}</p>
   </div>
   """
+
+formatName = (name) ->
+  [last, first] = name.split ','
+  "#{first} #{last}"
 
 updateCourseResults = (results) ->
   $("#course-results").html ''

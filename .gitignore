@@ -2,3 +2,5 @@
 #*py
 static/js
 static/stylesheets
+static/.sass-cache
+ 
