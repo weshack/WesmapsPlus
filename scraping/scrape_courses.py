@@ -16,7 +16,7 @@ def remove_tags(t):
         elif not inTag:
             ret += s
 
-    return reta
+    return ret
 
 year_pages = {
     '2006-2007': "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?term=1069",
@@ -91,7 +91,7 @@ def get_course_info_from_course_page(url):
 
     try:
         course['description'] = remove_tags(selector.select("//td[@colspan='3']/br").extract()[0]).strip('\n')
-    except:
+    except:    
         course['description'] = 'This course has no description.'
 
     try:
