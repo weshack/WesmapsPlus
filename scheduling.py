@@ -35,6 +35,7 @@ def timeRangeToMilitary(timeString):
 	timeArray = timeString.split('-')
 	outTime = []
 	for time in timeArray:
+		print 'TIME IS ' + time
 		hour = time.split(":")[0]
 		minute = time.split(":")[1][0:2]
 		m = time[-2:]
