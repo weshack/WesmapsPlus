@@ -3,7 +3,7 @@ require 'sqlite3'
 
 json_data = JSON.parse(IO.read("courses.json"))
 courses = SQLite3::Database.new("courses.db")
-courses.execute "DROP TABLE courses"
+#courses.execute "DROP TABLE courses"
 courses.execute <<-SQL
 CREATE TABLE courses (
 _uid INTEGER PRIMARY KEY,
@@ -17,11 +17,12 @@ courseid INTEGER,
 semester TEXT,
 department TEXT,
 gradingMode TEXT,
-description TEXT
+description TEXT,
+sections TEXT
 );
 SQL
 
-courses.execute "DROP TABLE sections"
+#courses.execute "DROP TABLE sections"
 courses.execute <<-SQL
 CREATE TABLE sections (
 _uid INTEGER PRIMARY KEY,
@@ -45,7 +46,7 @@ enrollmentLimit INTEGER,
 assignments_and_examinations TEXT
 );
 SQL
-courses.execute "DROP TABLE professors"
+#courses.execute "DROP TABLE professors"
 courses.execute <<-SQL
 CREATE TABLE professors (
 _uid INTEGER PRIMARY KEY,
@@ -67,9 +68,12 @@ sPk = 0
 total = json_data.size
 json_data.each do | course |
 	courseuid = primaryKey
+	sections = ""
 	course['sections'].each do | section |
 		sqlStatement = 'INSERT INTO sections VALUES ( '
 		sqlStatement << sPk.to_s
+		sections << sPk.to_s
+		sections << ";"
 		sqlStatement << ', '
 		sqlStatement << courseuid.to_s
 		sqlStatement << ', "'
@@ -168,6 +172,8 @@ json_data.each do | course |
 	sqlStatement << course['gradingMode']
 	sqlStatement << '", "'
 	sqlStatement << course['description'].gsub('"',"'")
+	sqlStatement << '", "'
+	sqlStatement << sections
 	sqlStatement << '");'
 	courses.execute(sqlStatement)
 	primaryKey += 1

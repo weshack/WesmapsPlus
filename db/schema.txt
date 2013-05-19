@@ -10,7 +10,8 @@ courseid INTEGER,
 semester TEXT,
 department TEXT,
 gradingMode TEXT,
-description TEXT
+description TEXT,
+sections TEXT
 )
 
 CREATE TABLE sections (

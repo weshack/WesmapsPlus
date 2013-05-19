@@ -21,18 +21,22 @@ Schedule = (function() {
   Schedule.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a', 'f2c45a'];
 
   function Schedule(courseData, $wrapper) {
-    var $newDay, d, _i, _len, _ref;
+    var $newDay, $rel, d, dayAbbrev, _i, _len, _ref;
 
     this.courseData = courseData;
+    $rel = $('<div class="schedulerel"></div>');
     this.$wrapper = $wrapper;
     this.days = {};
     this.colors = {};
+    this.$wrapper.append($rel);
+    this.$wrapper = $rel;
     _ref = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       d = _ref[_i];
-      $newDay = $('<div class="day day-' + d + '"><div class="relative"></div></div>');
+      $newDay = $("<div class=day day-" + d + "'><div class='relative'></div></div>");
       this.$wrapper.append($newDay);
-      $newDay.append('<div class="dayName">' + d.substring(0, 3) + '</div>');
+      dayAbbrev = d.substring(0, 3);
+      $newDay.append("<div class='dayName'>" + dayAbbrev + "</div>");
       this.days[d] = $newDay.children('.relative');
     }
     this.draw();
@@ -80,7 +84,7 @@ Schedule = (function() {
               latest = Schedule.latest;
               top = (t[0] - earliest) * 100 / (latest - earliest);
               height = (t[1] - t[0]) * 100 / (latest - earliest);
-              $thisMtg = $('<div class="mtg mtg-' + course + '"></div>');
+              $thisMtg = $("<div class='mtg mtg-" + course + "'></div>");
               $thisMtg.css('top', top + '%').css('height', height + '%').css('background-color', '#' + thisColor).data('course', course);
               thisSchedule = this;
               $thisMtg.hover(function() {
