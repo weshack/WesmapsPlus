@@ -46,6 +46,18 @@ def search():
     else:
         return simplejson.dumps([])
 
+@app.route("/search_by_professor")
+def search_prof():
+    prof = request.args.get('prof', '')
+    print 'prof', prof
+    if len(prof):
+        ret = []
+        cursor = search_for_course_by_professor(g.db, prof)
+        for item in cursor:
+            ret.append(item[0])
+        return simplejson.dumps(ret)
+    return simplejson.dumps([])
+
 @app.route('/course/<courseid>')
 def course_info(courseid):
     all_info = get_all_information(g.db, courseid)

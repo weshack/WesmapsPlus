@@ -75,8 +75,16 @@ def search_for_course_by_title(conn, term):
     c = conn.cursor()
     return c.execute("""
       select _uid from courses
-      where (title like '%"""+term+"""%' or department like '%"""+term+"""%') and semester = 'Fall 2013'
-   """)
+      where (title like '%"""+term+"""%' or department like '%"""+term+"""%')""")
+
+def search_for_course_by_professor(conn, professor):
+    c = conn.cursor()
+    prof_id = c.execute("select _uid from professors where name like '%" +professor+"%'").next()[0]
+    cursor = c.execute("select course_uid from sections where professor like '%#{prof_id};%'")
+    courses = ""
+    for item in cursor:
+        courses += "_uid = " + str(item[0]) + ' OR '
+    return c.execute("select _uid from courses where " + courses[:-3])
 
 def get_course_summary(conn, courseid):
     c = conn.cursor()
