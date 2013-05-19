@@ -80,7 +80,15 @@ def search_for_course_by_title(conn, term):
       select _uid from courses
       where (upper(title) like upper("""+json.dumps("%"+term+"%")+""") or upper(department) like upper("""+json.dumps('%'+term+'%')+"""))""")
 
-# def search_for_course_by_code(conn, code):
+def search_for_course_by_code(conn, code):
+    c = conn.cursor()
+    ret = []
+    for row in c.execute("select _uid,department,number from courses"):
+        courseCode = str(row[1])+str(row[2])
+        if code.upper() in courseCode:
+            print 'potCode', courseCode
+            ret.append(row[0])
+    return ret
 #     m = re.search(r'[0-9]', code)
 
 #     if m:

@@ -200,12 +200,11 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
   console.log 'courseinfotempl'
   isStarred = _uid in window.starredCourses
   starredClass = if isStarred then "starred-course-result" else ""
-  
+
   ret = """
     <div class='course-info'>
       <div class='star-container #{starredClass}'>
         <span class='star-character'>&#9734;</span>
-        <span class='star-count'>#{allCourses[_uid].stars}</span>
       </div>
       <header>
         <h1>#{code}</h1>
@@ -214,6 +213,7 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
       <p class='course-info-description'>#{description}</p>
     </div>
   """
+#        <span class='star-count'>#{allCourses[_uid].stars}</span>
 
   ret
 
@@ -260,10 +260,7 @@ RMPtoNaturalLanguage =
   0: "not a good professor"
 
 
-
-
-sectionInfoTemplate = (index, {_uid, times, instructors}) ->
-  index++
+sectionInfoTemplate = (sectionIndex, {_uid, times, instructors}) ->
   sectionInSchedule = _uid.toString() in window.scheduledSections
   console.log "SECTION IN SCHEDULE"
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
@@ -283,7 +280,7 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
 
   naturalLanguageText = """
     <button class='section-update #{sectionConflictClass}'></button>
-    <h4>Section #{index}</h4>
+    <h4>Section #{sectionIndex + 1}</h4>
     <ul class='courseInfo'>
       #{profText}
       <li>meets #{scheduleToString( times )}</li>
@@ -320,7 +317,6 @@ courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
   <li class='course-result dept-#{departmentCode} #{starredClass}' id='course-result-#{id}'>
     <div class='star-container'>
       <span class='star-character'>&#9734;</span>
-      <span class='star-count'>#{stars}</span>
     </div>
     <div class='course-result-main'>
       <p class='course-result-code'>#{code}</p>
@@ -337,14 +333,13 @@ courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
 
   # </li>
   # """
+#      <span class='star-count'>#{stars}</span>
     #<p class='course-result-professor'>#{formatName professor}</p>
 
 formatName = (name = 'STAFF') ->
   return name if name == 'STAFF'
   [last, first] = name.split ','
   "#{first} #{last}"
-
-
 
 notify = (msg, error = false, duration) ->
   if error
@@ -410,7 +405,8 @@ updateCourseResults = (results) ->
 autocomplete = (term, cb) ->
   $.getJSON '/search_by_professor', prof: term, (results1) ->
     $.getJSON '/search_by_title', name: term, (results) ->
-      cb results.concat(results1)
+      $.getJSON '/search_by_code', code: term, (results2) ->
+        cb (results.concat(results1)).concat(results2)
 
 updateSearchField = (v) ->
   if v.length
