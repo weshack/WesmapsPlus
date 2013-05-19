@@ -64,6 +64,11 @@ a:hover
     border-right: 1px solid black
     overflow-y: scroll
 
+    li:nth-child(odd)
+      background-color: #E8E8E8
+
+
+
   #content
     position: absolute
     left: 500px
@@ -150,6 +155,13 @@ a:hover
 
 .course-result-professor
   font-size: 13px
+
+.course-result-name
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 270px
+
 
 .starred-course-result
   background: #FFFDE8
