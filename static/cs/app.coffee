@@ -134,9 +134,17 @@ getFullCourseInfo = (id, cb) ->
     cb result
 
 selectCourse = (courseid, switchToMode) ->
-  refreshList currentCourseIds, switchToMode or currentMode, courseid
-  getFullCourseInfo courseid, (course) ->
-    console.log 'full course', course
+  $("#content").show()
+  $.getJSON "/course/#{courseid}", (data) ->
+    $("#course-code").html "#{data['department']}#{data['number']}"
+    $("#course-name").html data['title']
+    $("#credit-data").html  data['credit']
+    $("#gened-data").html  data['genEdArea']
+    $("#graded-data").html  data['gradingMode']
+    $("#prereq-data").html data['prerequisites']
+    $("#description").html data['description']
+    refreshList currentCourseIds, switchToMode or currentMode, courseid
+  
 
 createCourseEl = (course) ->
   $el = $ courseTemplate course
@@ -278,7 +286,7 @@ $ ->
         refreshList courseResults, currentMode
     else
       refreshList allCourseIds, currentMode
-
+  $("#content").hide()
   window.theSchedule = new Schedule({}, $('#schedule'))
   getAndUpdateSchedule()
 
@@ -287,5 +295,3 @@ $ ->
   fillSubjectList()
 
   refreshList allCourseIds, 'all', null
-
-
