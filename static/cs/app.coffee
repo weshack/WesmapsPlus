@@ -400,7 +400,8 @@ updateCourseResults = (results) ->
 autocomplete = (term, cb) ->
   $.getJSON '/search_by_professor', prof: term, (results1) ->
     $.getJSON '/search_by_title', name: term, (results) ->
-      cb results.concat(results1)
+      $.getJSON '/search_by_code', code: term, (results2) ->
+        cb (results.concat(results1)).concat(results2)
 
 updateSearchField = (v) ->
   if v.length
