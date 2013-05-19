@@ -1,13 +1,17 @@
 <html>
 	<head>
 		<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
-		<link href='styles.css' rel='stylesheet' type='text/css'>
+		<link href='individual-course.css' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 		<h1><div class=course-code>MB&amp;B 181</div><span class=course-name>Principles of Biology I: Cell Biology and Molecular Basis of Heredity</span></h1>
 		<h2></h2>
 		<h3>Crosslisting: BIOL 181</h3>
 		<div class=container>
+			<form name="input" action="/courses" method="DELETE" id="form1" >
+				<input type="hidden" name="sections" value="5">
+			</form>
+			<button form="form1" type="submit" class="add"></button>
 			<div class=header>Credit</div>
 			<div class=data>1</div>
 			<div class=header>GenEd</div>

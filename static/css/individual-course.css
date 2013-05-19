@@ -6,6 +6,24 @@ color: black;
 font-family: 'Roboto Slab', serif;
 }
 
+.remove
+{
+width: 30px;
+height: 20px;
+padding: 0 0 30 0;
+border: 0px;
+background: transparent url(minus.png) no-repeat center;
+}
+
+.add
+{
+width: 30px;
+height: 20px;
+padding: 0 0 30 0;
+border: 0px;
+background: transparent url(add.png) no-repeat center;
+}
+
 h1{
 	margin: 5 200 0 100;
 	padding: 0;

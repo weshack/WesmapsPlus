@@ -48,15 +48,24 @@
 data = JSON.parse($.getJSON('courses/'))
 currSchedule = JSON.parse($.getJSON("/schedule"))
 method = "POST"
-buttonMsg = "Add"
+class = "add"
 if data['_uid'] in currSchedule
 	method = "DELETE"
+<<<<<<< HEAD
 	buttonMsg = "Remove"
 
+=======
+	class = "remove"
+	
+>>>>>>> Now with pretty buttons!
 
 $("body").html('''
 <h1><div class=course-code>#{data['department']}#{data['number']}</div><span class=course-name>#{data['title']}</span></h1>
 <div class=container>
+	<form name="input" action="/courses" method="#{method}" id="form1" >
+		<input type="hidden" name="sections" value="5">
+	</form>
+	<button form="form1" type="submit" class="#{class}"></button>
 	<div class=header>Credit</div>
 	<div class=data>#{data['credit']}</div>
 	<div class=header>GenEd</div>
@@ -66,8 +75,12 @@ $("body").html('''
 	<div class=header>Prerequisites</div>
 	<div class=data>#{data['prerequisites']}</div>
 </div>
+<<<<<<< HEAD
 <p>data['description']</p>
 <form name="input" action="/courses" method="#{method}">
 <input type="submit" value="#{buttonMsg}">
 <input type="hidden" name="sections" value="#{data['_uid']}">
 </form>''')
+=======
+<p>data['description']</p>''')
+>>>>>>> Now with pretty buttons!
