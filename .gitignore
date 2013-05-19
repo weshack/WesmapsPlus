@@ -6,3 +6,5 @@ static/.sass-cache/*
  *.sassc
 #*#
 *.orig
+
+static/js/*.js
