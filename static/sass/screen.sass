@@ -210,14 +210,21 @@ a:hover
 
     #course-search
       position: absolute
-      top: 0
+      top: 6px
       //left: $subj-list-width
       left: 153px
       margin: 0
-      height: $header-height
-      line-height: $header-height
+      height: $header-height - 12
+      line-height: $header-height - 12
       box-shadow: none
-      border-bottom: 1px solid black
+      width: 400px
+      vertical-align: middle
+      padding: 10px
+      font-size: 15px
+      margin-left: auto
+      margin-right: auto
+      border-radius: $header-height/2 - 6
+      border: 1px solid #AAA 
 
     #notification
       position: absolute
@@ -270,7 +277,6 @@ a:hover
         .mtg 
           position: absolute
           width: 100%
-          background-color: black
           cursor: hand
           transition: opacity 0.1s linear
 
@@ -301,7 +307,7 @@ a:hover
   /* .star-character:hover:before
   /*   position: absolute
   /*   content: ""
-  /*   color: orange
+  /*   color: orange*/
 
 
 .star-container
@@ -353,16 +359,24 @@ a:hover
   font-size: 13px
   font-style: italic
 
+.section
+  min-height: 200px 
+  border-bottom: 1px solid #AAA
+
+  &:last-child
+    border-bottom: none
+
 .section-schedule
 
   .schedulerel
     height: 150px
-    width: 250px
+    width: 45%
     margin-left: 20px
     border-bottom: 1px solid black
     border-top: 1px solid black
     background-color: rgb(255,255,255)
-    float: left
+    float: right
+    position: static
 
   .day
     width: 14.285714286%
@@ -387,22 +401,18 @@ a:hover
     .mtg 
       position: absolute
       width: 100%
-      background-color: black
-
-#course-search
-  float: right
-  width: 400px
-  vertical-align: middle
-  padding: 10px
-  font-size: 15px
-  margin-left: auto
-  margin-right: auto
+      border-style: solid
+      border-color: transparent
+      border-width: 1px 0
 
 .section-in-schedule
   .schedulerel
     border: 1px solid darkblue
 
 .course-info 
+
+  ul
+    list-style-type: bullet
 
   header
 
@@ -423,6 +433,12 @@ a:hover
     margin: 20px 0
     text-align: left
     line-height: 1.33em
+
+  h4
+    text-transform: uppercase
+    font-size: 18px
+    color: #999
+    margin-bottom: 0.5em
     
 
   .star-container
@@ -430,9 +446,11 @@ a:hover
 
   .section-natural-language-text
     font-size: 14px
+
     b
       font-weight: 600
-    float: right
+
+
 
 .color-red
   color: red

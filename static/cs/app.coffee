@@ -187,9 +187,10 @@ createCourseInfoEl = (courseInfo) ->
     else
       starCourse courseid, =>
         refresh()
-
+  $inner = $('<div class="sections"></div>')
+  $el.append $inner
   for section, index in courseInfo.sections
-    $el.append createSectionInfoEl index, section
+    $inner.append createSectionInfoEl index, section
 
   $el
 
@@ -243,6 +244,7 @@ createSectionInfoEl = (index, section) ->
 
 naturalLanguageJoin = (names) ->
   if names.length == 1 then return names[0]
+  if names.length == 2 then return names.join(' and ')
   [fsts..., lst] = [names.slice(0, -1), names.slice(-1)]
   fsts.join(' , ') + " and " + lst
 
@@ -265,16 +267,24 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
   sectionConflicts = isThereConflict window.theSchedule.courseData, times
 
-  professorOrProfessors = if instructors.length > 1 then "professors" else 'professor'
   formattedInstructors = instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
   formattedInstructorsJoined = naturalLanguageJoin formattedInstructors
 
-
-  naturalLanguageText = "The <b>#{toOrdinal[index]}</b> section of this class meets at #{scheduleToString( times )}. It is taught by #{professorOrProfessors} #{formattedInstructorsJoined}\. "
-
+  profText = ''
+  profArray = []
   for {name, rating}, index in instructors
     if rating != -1
-      naturalLanguageText += "Your classmates have rated #{formattedInstructors[index]} as <b>#{RMPtoNaturalLanguage[Math.floor(rating)]}</b>. "
+      profArray.push("#{formattedInstructors[index]} (#{RMPtoNaturalLanguage[Math.floor(rating)]})")
+
+  profText = 'Taught by ' + naturalLanguageJoin profArray
+
+  naturalLanguageText = """
+    <h4>Section #{index}</h4>
+    <ul class='courseInfo'>
+      <li>#{profText}</li>
+      <li>meets #{scheduleToString( times )}</li>
+    </ul>
+  """
 
   if sectionInSchedule
     naturalLanguageText += "<b><span class='color-darkblue'>You have already added this section to your schedule.</span></b>"
@@ -284,8 +294,8 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
 
   """
   <div class='section' id='section-#{_uid}'>
-    <div class='section-schedule #{sectionInScheduleClass}'><div>
     <button class='section-update'></button>
+    <div class='section-schedule #{sectionInScheduleClass}'></div>
     <p class='section-natural-language-text'>#{naturalLanguageText}</p>
   </div>
   """

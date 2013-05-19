@@ -50,7 +50,8 @@ class SectionSchedule
           $thisMtg
             .css('top', top + '%')
             .css('height', height + '%')
-            .css('background-color', otherColor)
+            .css('border-color', otherColor)
+            .css('background-color', 'rgba(0,0,0,0.05)')
 
           @days[day].append($thisMtg)
 
