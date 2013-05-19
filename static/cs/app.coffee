@@ -224,14 +224,12 @@ createSectionInfoEl = (index, section) ->
     $el.find('.section-update').removeClass("add-section") # to be run before click!
     $el.find('.section-update').on 'click', ->
       removeSection section._uid
-      refresh()
   else
     $el.find('.section-update').addClass("add-section") # won't work since this needs
     $el.find('.section-update').removeClass("remove-section") # to be run before click!
     $el.find('.section-update').on 'click', ->
       if not isThereConflict window.theSchedule.courseData, section
         addSection section._uid
-        refresh()
 
   $scheduleEl = $el.find '.section-schedule'
 
@@ -278,12 +276,12 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
     if rating != -1
       profArray.push("#{formattedInstructors[index]} (#{RMPtoNaturalLanguage[Math.floor(rating)]})")
 
-  profText = 'Taught by ' + naturalLanguageJoin profArray
+  profText = if instructors.length then '<li>Taught by ' + naturalLanguageJoin profArray + '</li>' else ''
 
   naturalLanguageText = """
     <h4>Section #{index}</h4>
     <ul class='courseInfo'>
-      <li>#{profText}</li>
+      #{profText}
       <li>meets #{scheduleToString( times )}</li>
     </ul>
   """
