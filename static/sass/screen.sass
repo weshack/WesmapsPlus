@@ -95,6 +95,9 @@ a:hover
     overflow-y: scroll
     cursor: pointer
 
+    li:nth-child(odd)
+      background-color: #E8E8E8
+
     .course-result
       border-bottom: 1px solid #444
       padding: 10px
@@ -113,10 +116,60 @@ a:hover
 
   #content
     position: absolute
-    left: $subj-list-width + $course-list-width
-    top: $header-height
+    left: $subj_list_width + $course_list_width + 10
+    text-align: left
+    top: 36px
     right: 0
     height: 100%
+
+    h1
+      margin: 5 200 0 100
+      padding: 0
+      font-size: 20px
+      font-weight: 200
+      color: #222222
+      border-radius: 15px
+      -moz-border-radius: 15px
+      border: 3px solid red
+      padding: 10px
+
+    h2, h3
+      margin: 0 0 10 0
+      padding: 0
+      font-weight: normal
+      font-weight: 200
+      color: #222222
+
+    #course-code
+      font-weight: bold
+
+    #course-name
+      font-size: 70%
+
+    #header
+      background-color: red
+      color: white
+      font-weight: bold
+      text-align: center
+
+    #data
+      text-align: center
+      margin: 5px 0px 10px 0px
+
+    #container
+      width: 200px
+      padding: 5px
+      border: 1px solid #cccccc
+      background: #FAFAFA
+      text-align: center
+      float: right
+
+    #description
+      width: 400px
+      padding-top: 20px
+      padding-left: 10px
+      text-align: justify
+      line-height: 1.2em
 
   nav#main 
     position: fixed
@@ -126,17 +179,19 @@ a:hover
     z-index: 10
 
     h1#title
+      background-color: rgba(255, 0, 0, 0.8)
+      color: white
+      border: 1px solid black
       position: absolute
-      top: 0
-      left: 10px
-      font-weight: 300
+      padding-left: 10px
+      width: $subj-list-width
       font-size: 26px
-      line-height: $header-height
+      line-height: 34px
 
     #course-search
       position: absolute
       top: 0
-      left: 153px
+      left: $subj-list-width
       margin: 0
       height: $header-height
       line-height: $header-height
@@ -148,7 +203,7 @@ a:hover
     #notification
       position: absolute
       top: 0
-      left: 900px
+      left: $subj-list-width + $course-list-width + 350
       right: 0
       height: 100%
       margin-top: 10px
@@ -159,7 +214,7 @@ a:hover
     #schedule
       position: absolute
       top: 0
-      left: 550px
+      left: $course-list-width + $subj-list-width
       right: 0
       height: 100%
 
@@ -210,6 +265,11 @@ a:hover
 .course-result-professor
   font-size: 13px
 
+.course-result-name
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 270px
 
 .starred-course-result
   background: #FFFDE8
@@ -255,7 +315,7 @@ a:hover
 .count-indicator
   border-radius: 15px
   border: 1px solid rgb(22, 137, 173)
-  padding: 3px
+  padding: 0 3px 1 3px
   font-size: 9px
   background: rgb(22, 137, 173)
   color: white

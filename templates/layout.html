@@ -41,13 +41,22 @@
 			<div id="course-list" class="main-col">
 				<ul></ul>
 			</div>
-			<div id="content" class="main-col">
-				{% block content %}
-				{% endblock %}
-                        </div>
-			<footer>Built by Anastasis Germanidis, Tobias
-			Butler, Max Dietz, and Justin Raymond for the
-			<a href="http://weshack.com">Wesleyan Senior Week Hackathon</a>.</footer>
+			<div id="content">
+				<h1><div id='course-code'></div><span id='course-name'></span></h1>
+				<div id='container'>
+  					<button id='course-updater'></button>
+  					<div id='header'>Credit</div>
+  					<div id='credit-data'></div>
+  					<div id='header'>GenEd</div>
+  					<div id='gened-data'></div>
+  					<div id='header'>Graded?</div>
+  					<div id='graded-data'></div>
+  					<div id='header'>Prerequisites</div>
+  					<div id='prereq-data'></div>
+				</div>
+				<div id='description'></div>
+			</div>
+			<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
 			{% block footer %}
 			{% endblock %}
 		</div>
