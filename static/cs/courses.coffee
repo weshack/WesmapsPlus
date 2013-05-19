@@ -63,7 +63,7 @@ $("body").html('''
 <h1><div class=course-code>#{data['department']}#{data['number']}</div><span class=course-name>#{data['title']}</span></h1>
 <div class=container>
 	<form name="input" action="/courses" method="#{method}" id="form1" >
-		<input type="hidden" name="sections" value="5">
+		<input type="hidden" name="section" value="5">
 	</form>
 	<button form="form1" type="submit" class="#{class}"></button>
 	<div class=header>Credit</div>
