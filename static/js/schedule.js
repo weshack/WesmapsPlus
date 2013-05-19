@@ -9,6 +9,8 @@ Schedule = (function() {
 
   Schedule.latest = 22;
 
+  Schedule.allDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
   Schedule.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a', 'f2c45a'];
 
   function Schedule(courseData, $wrapper) {
@@ -27,7 +29,7 @@ Schedule = (function() {
     this.colors = {};
     this.$wrapper.append($rel);
     this.$wrapper = $rel;
-    _ref = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    _ref = Schedule.allDays;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       d = _ref[_i];
       $newDay = $("<div class=day day-" + d + "'><div class='relative'></div></div>");
@@ -40,11 +42,12 @@ Schedule = (function() {
   }
 
   Schedule.prototype.highlightCourse = function(course) {
-    var title;
+    var schedStr, title;
     title = allCourses[allSections[course]].title;
     $('.mtg').addClass('fade');
     $('.mtg-' + course).removeClass('fade');
-    return notify(title);
+    schedStr = scheduleToString(this.courseData[course]);
+    return notify("" + title + " - " + schedStr);
   };
 
   Schedule.prototype.lowlightCourses = function() {

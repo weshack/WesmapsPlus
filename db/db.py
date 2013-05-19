@@ -79,11 +79,16 @@ def search_for_course_by_title(conn, term):
 
 def search_for_course_by_professor(conn, professor):
     c = conn.cursor()
-    try:
-        prof_id = c.execute("select _uid from professors where upper(name) like upper('%"+str(professor)+"%')").next()[0]
-    except:
+    prof_ids = []
+    for prof_id in c.execute("select _uid from professors where upper(name) like upper('%"+str(professor)+"%')"):
+        prof_ids.append(prof_id[0])
+    if len(prof_ids):
+        msg = "select course_uid from sections where "
+        for prof_id in prof_ids:
+            msg += " (professor like '"+str(prof_id)+";%' or professor like '%;"+str(prof_id)+";%' or professor = '" + str(prof_id)+"') OR "
+        return c.execute(msg[:-3])
+    else:
         return []
-    return c.execute("select course_uid from sections where professor like '"+str(prof_id)+";%' or professor like '%;"+str(prof_id)+";%' or professor = '" + str(prof_id)+"'")
 
 def get_course_summary(conn, courseid):
     c = conn.cursor()
