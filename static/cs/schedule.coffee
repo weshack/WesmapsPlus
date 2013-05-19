@@ -26,7 +26,6 @@ class Schedule
 
 		this.draw()
 
-<<<<<<< HEAD
 	highlightCourse: (course, x, y) =>
     {title} = allCourses[allSections[course]]
     $('.mtg').addClass('fade')
@@ -45,18 +44,6 @@ class Schedule
     notify ""
     #@popup.remove()
     #delete @popup
-=======
-	updateCourseData: (courseData) ->
-		@courseData = courseData
-		this.draw()
-
-	highlightCourse: (course) ->
-		$('.mtg').addClass('fade');
-		$('.mtg-' + course).removeClass('fade');
-
-	lowlightCourses: ->
-		$('.mtg').removeClass('fade')
->>>>>>> 89cca413ab7d4d42ac5c5069b6bd87ec6724328b
 
 	draw: ->
 		for day, $el of @days
