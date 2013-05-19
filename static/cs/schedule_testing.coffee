@@ -5,10 +5,14 @@ updateSchedule = (schedule) ->
   console.log 'new schedule', schedule
   window.theSchedule.courseData = schedule
   window.theSchedule.draw()
+  refresh()
 
 getAndUpdateSchedule = (schedule) ->
-  $.getJSON '/schedule', (schedule) ->
-    updateSchedule schedule
+  getAllSections (sections) ->
+    console.log 'new window.scheduledSections', sections
+    window.scheduledSections = sections
+    $.getJSON '/schedule', (schedule) ->
+      updateSchedule schedule
 
 addSection = (section) ->
   $.ajax
@@ -17,7 +21,7 @@ addSection = (section) ->
     data: {section}
     dataType: 'json'
     success: (newSections) ->
-      scheduledSections = newSections
+      window.scheduledSections = newSections
       getAndUpdateSchedule()
     error: ->
       conflictDetected()
@@ -28,54 +32,56 @@ removeSection = (section) ->
     url: "/schedule/#{section}"
     data: {section}
     dataType: 'json'
-    success: ->
-      scheduledSections = newSections
+    success: (newSections) ->
+      window.scheduledSections = newSections
       getAndUpdateSchedule()
 
 getSchedule = ->
   $.getJSON '/schedule', (schedule) ->
     console.log JSON.stringify schedule
 
-getAllSections = ->
+getAllSections = (cb) ->
   $.getJSON '/debug/sections', (sections) ->
-      console.log sections
+      cb sections
 
-starCourse = (courseid) ->
+starCourse = (courseid, cb) ->
   $.ajax
     type: 'POST'
     url: "/star/#{courseid}"
     dataType: 'json'
-    success: (newStarred) ->
-      starredCourses = newStarred.map (c) -> parseInt c
+    success: ->
+      getStarredCourses ->
+        cb?()
 
-unstarCourse = (courseid) ->
+unstarCourse = (courseid, cb) ->
   $.ajax
     type: 'DELETE'
     url: "/star/#{courseid}"
     dataType: 'json'
     success: (newStarred) ->
-      starredCourses = newStarred.map (c) -> parseInt c
+      getStarredCourses ->
+        cb?()
 
-getStarredCourses = ->
+getStarredCourses = (cb) ->
   $.getJSON '/starred', (starred) ->
-    starredCourses = starred.map (c) -> parseInt c
+    window.starredCourses = starred.map (c) -> parseInt c
+    cb? starred
 
-filterForSubject = (courses, subj) ->
-  resultsByDept = buildCourseResults courses
+filterForSubject = (courseIds, subj) ->
+  resultsByDept = buildCourseResults courseIds
   resultsByDept[subj] or []
 
-filterForStarred = (courses) ->
+filterForStarred = (courseIds) ->
   ret = []
-  for course in courses
-    if course.id in starredCourses
-      ret.push course
+  for courseid in courseIds
+    if courseid in window.starredCourses
+      ret.push allCourses[courseid]
   ret
 
-filterForScheduled = (courses) ->
-  courseids = courses.map ({id}) -> id
+filterForScheduled = (courseIds) ->
   ret = []
-  for scheduled in scheduledSections
-    idx = courseids.indexOf allSections[scheduled]
+  for scheduled in window.scheduledSections
+    idx = courseIds.indexOf allSections[scheduled]
     if idx != -1
-      ret.push courses[idx]
+      ret.push allCourses[courseIds[idx]]
   ret

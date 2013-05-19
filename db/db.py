@@ -74,7 +74,7 @@ def get_all_courses():
 def search_for_course_by_title(conn, term):
     c = conn.cursor()
     return c.execute("""
-      select * from courses
+      select _uid from courses
       where (title like '%"""+term+"""%' or department like '%"""+term+"""%') and semester = 'Fall 2013'
    """)
 
@@ -118,14 +118,10 @@ def get_all_information(conn, courseid):
     c = conn.cursor()
     courseDict = build_full_course_obj(c.execute("select * from courses where _uid = " + str(courseid)).next())
     sectionCursor = get_sections_for_course(conn, courseid)
-    while True:
-        try:
-            section = sectionCursor.next()
-            sectionObj = build_full_section_obj(section)
-            sectionObj['instructors'] = get_instructors_for_section(conn, section[0])
-            courseDict['sections'].append(sectionObj)
-        except:
-            break
+    for section in sectionCursor:
+        sectionObj = build_full_section_obj(section)
+        sectionObj['instructors'] = get_instructors_for_section(conn, section[0])
+        courseDict['sections'].append(sectionObj)
     courseDict['instructors'] = get_instructors_for_course(conn, courseid)
     return courseDict
 
@@ -151,12 +147,12 @@ def get_instructors_for_section(conn, section):
 
 def get_instructors_for_course(conn, courseid):
     c = conn.cursor()
-    cursor = c.execute("select professor from sections where course_uid = " + str(courseid)).next()
-    
+    cursor = c.execute("select professor from sections where course_uid = " + str(courseid))
+
     instructors = []
 
     for item in cursor:
-        if not item: continue
+        if not item[0]: continue
         for professor in item[0].split(';'):
             instructors.append( get_instructor(conn, professor) )
     

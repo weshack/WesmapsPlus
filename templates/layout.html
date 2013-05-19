@@ -35,17 +35,19 @@
 					</div>
 				</nav>
 			{% endblock %}
-			<div id="subject-list">
+			<div id="subject-list" class="main-col">
 				<ul></ul>
 			</div>
-			<div id="course-list">
+			<div id="course-list" class="main-col">
 				<ul></ul>
 			</div>
-			<div id="content">
+			<div id="content" class="main-col">
 				{% block content %}
 				{% endblock %}
-			</div>
-			<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
+                        </div>
+			<footer>Built by Anastasis Germanidis, Tobias
+			Butler, Max Dietz, and Justin Raymond for the
+			<a href="http://weshack.com">Wesleyan Senior Week Hackathon</a>.</footer>
 			{% block footer %}
 			{% endblock %}
 		</div>

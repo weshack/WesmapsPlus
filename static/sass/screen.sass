@@ -1,7 +1,8 @@
 @import compass/reset
 
 $subj-list-width: 350px
-$course-list-width: 500px
+$course-list-width: 400px
+$header-height: 45px
 
 * 
   box-sizing: border-box
@@ -45,54 +46,82 @@ a:hover
     position: absolute
     width: $subj-list-width
     left: 0
-    top: 36px
+    top: $header-height
     bottom: 0
     border-right: 1px solid black
     overflow-y: scroll
     cursor: pointer
+
+
 
     li
       cursor: pointer
       padding: 10px
       border-bottom: 1px solid #444
       font-size: 15px
+      &:hover
+        background: rgb(237, 239, 250)
 
     .selected-category
-      background: rgb(237, 239, 250)
+      //background: rgb(237, 239, 250)
+      //background: rgb(242, 252, 244)
+      background: rgb(192, 221, 228)
+      &:hover
+        background: rgb(192, 221, 228)
+        
       //font-weight: bold
 
     .category-separator 
       height: 5px
       padding: 0
       background: lightgrey
+        
+    #category-scheduled
+      .category-title
+        padding-left: 10px
 
+    #category-starred
+      .category-title
+        padding-left: 10px
 
 
   #course-list
     position: absolute
     width: $course-list-width
     left: $subj-list-width
-    top: 36px
+    top: $header-height
     bottom: 0
     border-right: 1px solid black
     overflow-y: scroll
+    cursor: pointer
 
     .course-result
-      padding: 5px
       border-bottom: 1px solid #444
       padding: 10px
+      &:hover
+        background: rgb(237, 239, 250)
+
+    .selected-course-result
+      background: rgb(192, 221, 228)
+      &:hover
+        background: rgb(192, 221, 228)      
+      /* .star-container:hover
+      /*   .star-character:before
+      /*     position: absolute
+      /*     content: "\2605"
+      /*     color: orange
 
   #content
     position: absolute
-    left: 800px
-    top: 36px
+    left: $subj-list-width + $course-list-width
+    top: $header-height
     right: 0
     height: 100%
 
   nav#main 
     position: fixed
     width: 100%
-    height: 36px
+    height: $header-height
     border-bottom: 1px solid #444
     z-index: 10
 
@@ -102,18 +131,19 @@ a:hover
       left: 10px
       font-weight: 300
       font-size: 26px
-      line-height: 36px
+      line-height: $header-height
 
     #course-search
       position: absolute
       top: 0
       left: 153px
       margin: 0
-      height: 36px
-      line-height: 36px
-      //width: $course-list-width
+      height: $header-height
+      line-height: $header-height
       box-shadow: none
       border-bottom: 1px solid black
+
+    
 
     #notification
       position: absolute
@@ -134,11 +164,11 @@ a:hover
       height: 100%
 
       .schedulerel
-        height: 36px
+        height: $header-height
         width: 300px
         margin-left: 20px
         border-bottom: 1px solid black
-        background-color: rgba(255,255,255,0.9)
+        background-color: rgb(255,255,255)
         transition: height 0.2s ease-in-out
 
         &:hover
@@ -180,11 +210,35 @@ a:hover
 .course-result-professor
   font-size: 13px
 
+
 .starred-course-result
   background: #FFFDE8
+  .star-character:before
+    position: absolute
+    content: "\2605"
+    color: orange
   
+
+  /* .star-character:hover:before
+  /*   position: absolute
+  /*   content: ""
+  /*   color: orange
+
+
+.star-container
+  float: right
+  text-align: center
+  .star-count
+    margin-top: 10px
+    font-size: 12px
+
+.star-character
+  font-size: 25px
+  display: block
+  cursor: pointer
+
 #course-search
-  width: 500px
+  width: 400px
   vertical-align: middle
   padding: 10px
   font-size: 15px
@@ -210,9 +264,31 @@ a:hover
   width: 30px
   text-align: center
 
+.star-container
+  cursor: pointer
+  z-index: 50
+
+.course-result-main
+  &:hover
+    color: darkblue
+    
+
+.main-col
+  margin-bottom: 30px
+
+.course-result-instructors
+  font-size: 13px
+  font-style: italic
+
 footer
   position: absolute
   text-align: center
   width: 100%
-  bottom: 5px
+  height: 30px
+  bottom: 0px
+  padding: 5px
+  border-top: 1px solid black
+  background: white
+  a:hover
+    text-decoration: none
  

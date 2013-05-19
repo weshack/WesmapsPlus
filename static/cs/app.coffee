@@ -9,29 +9,24 @@ subjectCodes = {"ARAB":"Arabic","ARHA":"Art History","ARST":"Art Studio","ALIT":
 
 subjectCodes2 = {"ARAB":"Arabic","ARHA":"Art History","ARST":"Art Studio","ALIT":"Asian Languages and Literature","CHIN":"Chinese","CCIV":"Classical Civilization","COL":"College of Letters","DANC":"Dance","ENGL":"English","FILM":"Film Studies","FREN":"French","FRST":"French Studies","FIST":"French, Italian, Spanish in Translation","GELT":"German Literature in English","GRST":"German Studies","GRK":"Greek","HEBR":"Hebrew","HEST":"Hebrew Studies","IBST":"Iberian Studies","ITAL":"Italian Studies","JAPN":"Japanese Studies","KREA":"Korean Studies","LAT":"Latin Studies","LANG":"Less Commonly Taught Languages","MUSC":"Music","PORT":"Portugese","RUSS":"Russian","RULE":"Russian Literature in English","SPAN":"Spanish","THEA":"Theater","AMST":"American Studies","ANTH":"Anthropology","CSS":"College of Social Studies","ECON":"Economics","GOVT":"Government","HIST":"History","PHIL":"Philosophy","RELI":"Religion","SOC":"Sociology","CEC":"Civic Engagement","CES":"Environmental Studies","CIM":"Informatics and Modeling","CIR":"International Relations","CJS":"Jewish and Israel Studies","CMES":"Middle Eastern Studies","CMB":"Molecular Biophysics","CSCT":"Social, Cultural, and Critical Theory","CSA":"South Asian Studies","CSED":"The Study of Education","CWRC":"Writing","ASTR":"Astronomy","BIOL":"Biology","CHEM":"Chemistry","COMP":"Computer Science","EES":"Earth and Environmental Sciences","MATH":"Mathematics","MBB":"Molecular Biology and Biochemistry","NSB":"Neuroscience and Behavior","PHYS":"Physics","PSYC":"Psychology","XAFS":"African Studies","XCHS":"Christianity Studies","XDST":"Disability Studies","XPSC":"Planetary Science","XSER":"Service-Learning","XURS":"Urban Studies","AFAM":"African American Studies Program","ARCP":"Archaeology Program","CHUM":"Center for the Humanities","CSPL":"Center for the Study of Public Life","EAST":"East Asian Studies Program","ENVS":"Environmental Studies Program","FGSS":"Feminist, Gender, and Sexuality Studies Program","LAST":"Latin American Studies Program","MECO":"Mathematics-Economics Program","MDST":"Medieval Studies Program","QAC":"Quantitative Analysis Center","REES":"Russian, East European, and Eurasian Studies Program","SISP":"Science in Society Program","WRCT":"Writing Center","COE":"College of the Environment","CPLS":"Graduate Planetary Science Concentration","PHED":"Physical Education","FORM":"Student Forums","WLIT":"World Literature Courses"}
 
-currentCourses = null
+currentCourseIds = null
 currentMode = null
+currentCourseId = null
+
+relevantSubjects = {}
+
+allCourseIds = _.values(allCourses).map (course) -> course.id
 
 subjectCodesReverse = {}
 
 for key, value of subjectCodes
   subjectCodesReverse[value] = key
 
-window.Router = Backbone.Router.extend
-  routes:
-    '/': 'index'
-    '/course/:id': 'course'
-
-  index: ->
-
-
-  course: (id) ->
-
 showCourses = (courses) ->
   $clist = $("#course-list ul")
   $clist.html ""
   for course in courses
-    $clist.append courseTemplate course
+    $clist.append createCourseEl course
 
 getListItemForMode = (mode) ->
   switch mode
@@ -47,63 +42,146 @@ getListItemForMode = (mode) ->
     else
       $("li[data-code='#{mode}']")
 
+updateStarredCountIndicator = (courses) ->
+  $("#category-starred .count-indicator").remove()
+  starred = filterForStarred courses
+  getListItemForMode('starred').append "<span class='count-indicator'>#{starred.length}</span>"
+
 fixCategoriesBasedOn = (courses) ->
+  relevantSubjects = {}
+
   $(".subject-category").hide()
   $(".count-indicator").remove()
 
   getListItemForMode('all').append "<span class='count-indicator'>#{courses.length}</span>"
 
-  starred = filterForStarred courses
-  getListItemForMode('starred').append "<span class='count-indicator'>#{starred.length}</span>"
+  updateStarredCountIndicator courses
 
   scheduled = filterForScheduled courses
   getListItemForMode('scheduled').append "<span class='count-indicator'>#{scheduled.length}</span>"
 
+  console.log 'buildCourseResults', courses
   resultsByDept = buildCourseResults courses
+
   for code, results of resultsByDept
+    relevantSubjects[code] = true
     $el = $("li[data-code='#{code}']")
     $el.show()
     $el.append "<span class='count-indicator'>#{results.length}</span>"
 
-refreshList = (courses, mode) ->
-  currentCourses = courses
+refresh = ->
+  refreshList currentCourseIds, currentMode, currentCourseId, true
+
+getCourseResultEl = (id) ->
+  $("#course-result-#{id}")
+
+refreshList = (courseIds, mode, courseid, force = false) ->
+  if (courseid and currentCourseId != courseid) or force
+    $(".course-result").removeClass 'selected-course-result'
+    getCourseResultEl(courseid).addClass 'selected-course-result'
+
+  if (courseIds != currentCourseIds or mode != currentMode) or force
+    console.log 'refreshing list'
+    fixCategoriesBasedOn courseIds
+
+    if (!relevantSubjects[mode]) and !(mode in ['all', 'starred', 'scheduled'])
+      console.log 'FIX'
+      return refreshList courseIds, 'all', courseid
+
+    $(".category").removeClass 'selected-category'
+    getListItemForMode(mode).addClass 'selected-category'
+
+    switch mode
+      when "all"
+        showCourses courseIds.map (id) -> allCourses[id]
+
+      when "starred"
+        relevant = filterForStarred courseIds
+        showCourses relevant
+
+      when "scheduled"
+        relevant = filterForScheduled courseIds
+        showCourses relevant
+
+      else
+        relevant = filterForSubject currentCourseIds, mode
+        showCourses relevant
+
+  if (courseid and currentCourseId != courseid) or force
+    $(".course-result").removeClass 'selected-course-result'
+    getCourseResultEl(courseid).addClass 'selected-course-result'
+
+  currentCourseIds = courseIds
   currentMode = mode
+  currentCourseId = courseid
 
-  fixCategoriesBasedOn courses
 
-  $(".category").removeClass 'selected-category'
-  getListItemForMode(mode).addClass 'selected-category'
-
-  switch mode
-    when "all"
-      showCourses courses
-
-    when "starred"
-      relevant = filterForStarred courses
-      showCourses relevant
-
-    when "scheduled"
-      relevant = filterForScheduled courses
-      showCourses relevant
-
-    else
-      relevant = filterForSubject currentCourses, mode
-      showCourses relevant
-
-buildCourseResults = (results) ->
+buildCourseResults = (courseIds) ->
   resultsByDepartment = {}
 
-  for result in results
-    (resultsByDepartment[result.departmentCode] ?= []).push result
+  for courseid in courseIds
+    course = allCourses[courseid]
+    (resultsByDepartment[course.departmentCode] ?= []).push course
 
   resultsByDepartment
 
-courseTemplate = ({id, code, title, professor, departmentCode}) ->
-  starredClass = if id in starredCourses then "starred-course-result" else ""
+getCourseSummary = (id, cb) ->
+  $.getJSON "/course/#{id}/summary", (result) ->
+    cb result
+
+getFullCourseInfo = (id, cb) ->
+  $.getJSON "/course/#{id}", (result) ->
+    cb result
+
+selectCourse = (courseid, switchToMode) ->
+  refreshList currentCourseIds, switchToMode or currentMode, courseid
+  getFullCourseInfo courseid, (course) ->
+    console.log 'full course', course
+
+createCourseEl = (course) ->
+  $el = $ courseTemplate course
+  courseid = course.id
+  do (courseid) ->
+    $el.on 'click', ->
+      selectCourse courseid
+
+    $el.find(".star-character").on 'click', ->
+      if courseid in window.starredCourses
+        unstarCourse courseid, =>
+          updateCourseEl courseid
+          updateStarredCountIndicator currentCourseIds
+      else
+        starCourse courseid, =>
+          updateCourseEl courseid
+          updateStarredCountIndicator currentCourseIds
+
+  $el
+
+updateCourseEl = (id) ->
+  getCourseSummary id, (course) ->
+    allCourses[id].stars = course.stars
+    $("#course-result-#{id}").replaceWith createCourseEl(course)
+
+courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
+  isStarred = id in window.starredCourses
+  starredClass = if isStarred then "starred-course-result" else ""
+  # starredImageSrc = if isStarred then "/static/images/course_starred.png" else "/static/images/course_unstarred.png"
+  # starImage = "<img src='#{starredImageSrc}'></img>"
+
+  formattedInstructors = _.uniq (instructors or []).map( (inst) -> formatName inst.name)
+  formattedInstructors = formattedInstructors.join ', '
+
   """
-  <li class='course-result dept-#{departmentCode} #{starredClass}'>
-    <p class='course-result-code'>#{code}</p>
-    <p class='course-result-name'>#{title}</p>
+  <li class='course-result dept-#{departmentCode} #{starredClass}' id='course-result-#{id}'>
+    <div class='star-container'>
+      <span class='star-character'>&#9734;</span>
+      <span class='star-count'>#{stars}</span>
+    </div>
+    <div class='course-result-main'>
+      <p class='course-result-code'>#{code}</p>
+      <p class='course-result-name'>#{title}</p>
+      <p class='course-result-instructors'>#{formattedInstructors}</p>
+    </div>
 
   </li>
   """
@@ -145,11 +223,16 @@ fillSubjectList = ->
   $subjectList = $('#subject-list ul')
 
   for categoryName, categoryTitle of additionalCategories
-    console.log categoryName, categoryTitle
-    categoryEl = $("<li class='category special-category' id='category-#{categoryName}'>#{categoryTitle}</li>")
+    if categoryName == 'scheduled'
+      additionalImage = "<img src='/static/images/calendar.png' width='20px' height='20px'></img>"
+    else if categoryName == 'starred'
+      additionalImage = "<img src='/static/images/star_category.png' width='20px' height='20px'></img>"
+    else
+      additionalImage = ''
+    categoryEl = $("<li class='category special-category' id='category-#{categoryName}'>#{additionalImage}<span class='category-title'>#{categoryTitle}</span></li>")
     do (categoryName, categoryTitle) ->
       categoryEl.on 'click', =>
-        refreshList currentCourses, categoryName
+        refreshList currentCourseIds, categoryName
     $subjectList.append categoryEl
 
   $subjectList.append "<li class='category-separator'></li>"
@@ -159,7 +242,7 @@ fillSubjectList = ->
     subjectEl = $("<li class='category subject-category' data-code='#{code}'>#{subj}</li>")
     do (code, subj) ->
       subjectEl.on 'click', =>
-        refreshList currentCourses, code
+        refreshList currentCourseIds, code
     $subjectList.append subjectEl
 
 updateCourseResults = (results) ->
@@ -188,7 +271,7 @@ $ ->
         #updateCourseResults courseResults
         refreshList courseResults, currentMode
     else
-      refreshList _.values(allCourses), currentMode
+      refreshList allCourseIds, currentMode
 
   window.theSchedule = new Schedule({}, $('#schedule'))
   getAndUpdateSchedule()
@@ -197,6 +280,6 @@ $ ->
 
   fillSubjectList()
 
-  refreshList _.values(allCourses), 'all'
+  refreshList allCourseIds, 'all', null
 
 
