@@ -190,6 +190,7 @@ createCourseInfoEl = (courseInfo) ->
   $inner = $('<div class="sections"></div>')
   $el.append $inner
   for section, index in courseInfo.sections
+    console.log 'section index', index
     $inner.append createSectionInfoEl index, section
 
   $el
@@ -262,23 +263,26 @@ RMPtoNaturalLanguage =
 
 
 sectionInfoTemplate = (index, {_uid, times, instructors}) ->
+  index++
   sectionInSchedule = _uid.toString() in window.scheduledSections
   console.log "SECTION IN SCHEDULE"
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
-  sectionConflicts = isThereConflict window.theSchedule.courseData, times
+  sectionConflicts = not sectionInSchedule and isThereConflict window.theSchedule.courseData, times
+  sectionConflictClass = if sectionConflicts then 'session-conflicts' else ''
 
   formattedInstructors = instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
   formattedInstructorsJoined = naturalLanguageJoin formattedInstructors
 
   profText = ''
   profArray = []
-  for {name, rating}, index in instructors
+  for {name, rating}, profIndex in instructors
     if rating != -1
-      profArray.push("#{formattedInstructors[index]} (#{RMPtoNaturalLanguage[Math.floor(rating)]})")
+      profArray.push("#{formattedInstructors[profIndex]} (#{RMPtoNaturalLanguage[Math.floor(rating)]})")
 
   profText = if instructors.length then '<li>Taught by ' + naturalLanguageJoin profArray + '</li>' else ''
 
   naturalLanguageText = """
+    <button class='section-update #{sectionConflictClass}'></button>
     <h4>Section #{index}</h4>
     <ul class='courseInfo'>
       #{profText}
@@ -294,9 +298,10 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
 
   """
   <div class='section' id='section-#{_uid}'>
-    <button class='section-update'></button>
     <div class='section-schedule #{sectionInScheduleClass}'></div>
-    <p class='section-natural-language-text'>#{naturalLanguageText}</p>
+    <p class='section-natural-language-text'>
+      #{naturalLanguageText}
+    </p>
   </div>
   """
 

@@ -52,7 +52,7 @@ class Schedule
         thisColor = @colors[course]
         console.log 'using existingi color', thisColor, 'for', course
       else
-        @colors[course] = thisColor = Schedule.possColors[Math.floor( Math.random() * 10 )]
+        @colors[course] = thisColor = Schedule.possColors.pop()
 
       for day, times of days
         for t in times
