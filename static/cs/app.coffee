@@ -203,8 +203,10 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
         <span class='star-character'>&#9734;</span>
         <span class='star-count'>#{allCourses[_uid].stars}</span>
       </div>
-      <h1>#{code}</h1>
-      <h3>#{title}</h3>
+      <header>
+        <h1>#{code}</h1>
+        <h3>#{title}</h3>
+      </header>
       <p class='course-info-description'>#{description}</p>
     </div>
   """

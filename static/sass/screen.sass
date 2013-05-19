@@ -61,6 +61,8 @@ a:hover
       padding: 10px
       border-bottom: 1px solid #444
       font-size: 15px
+      background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%)
+
       &:hover
         background: rgb(237, 239, 250)
 
@@ -100,7 +102,7 @@ a:hover
     box-shadow: 0 0 5px rgba(0,0,0,0.5)
 
     /* li:nth-child(odd)
-    /*   background-color: #E8E8E8
+    /*   background-color: #E8E8E8*/
 
     .course-result
       border-bottom: 1px solid #444
@@ -116,16 +118,17 @@ a:hover
       /*   .star-character:before
       /*     position: absolute
       /*     content: "\2605"
-      /*     color: orange
+      /*     color: orange*/
 
   #content
     position: absolute
-    left: $subj_list_width + $course_list_width + 10
+    left: $subj_list_width + $course_list_width
     text-align: left
     top: $header-height
     right: 0
-    bottom: 40px
+    bottom: 30px
     overflow-y: scroll
+    padding: 20px
 
 
 
@@ -389,19 +392,26 @@ a:hover
     border: 1px solid darkblue
 
 .course-info 
-  h1 
-    font-size: 35px
-    font-weight: bold
-    text-align: center
-    
-  h3
-    text-align: center
+
+  header
+
+    border-bottom: 1px solid #AAA
+    padding-bottom: 10px
+    margin-right: 40px
+
+    h1, h3
+      display: inline
+
+    h1 
+      font-size: 35px
+      font-weight: bold
+      color: #AAA
+      margin-right: 5px
 
   .course-info-description
-    margin-top: 20px
-    text-align: justify
-    padding-left: 20%
-    padding-right: 20%
+    margin: 20px 0
+    text-align: left
+    line-height: 1.33em
     
 
   .star-container
@@ -431,6 +441,7 @@ footer
   padding: 5px
   border-top: 1px solid black
   background: white
+  z-index: 10
   a:hover
     text-decoration: none
  
