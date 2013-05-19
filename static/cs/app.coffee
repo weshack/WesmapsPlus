@@ -288,11 +288,9 @@ updateCourseResults = (results) ->
 
 
 autocomplete = (term, cb) ->
-  $.getJSON '/search_by_title', name: term, (results) ->
-      cb results #cb results1.concat(results)
-  #$.getJSON '/search_by_professor', prof: term, (results1) ->
-  #$.getJSON '/search_by_title', name: term, (results) ->
-   #   cb results #cb results1.concat(results)
+  $.getJSON '/search_by_professor', prof: term, (results1) ->
+    $.getJSON '/search_by_title', name: term, (results) ->
+      cb results1.concat(results)
 
 $ ->
   $("#course-search").on 'keyup', ->

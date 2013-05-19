@@ -2,7 +2,7 @@ import simplejson
 import scheduling
 
 from flask import Flask, render_template, request, jsonify, g, session
-from db import search_for_course_by_title, connect_db, get_courses_from_cursor, get_all_information, get_times_for_section, get_course_summary, get_courseids_for_all_sections, get_instructors_for_course
+from db import search_for_course_by_title, connect_db, get_courses_from_cursor, get_all_information, get_times_for_section, get_course_summary, get_courseids_for_all_sections, get_instructors_for_course, search_for_course_by_professor
 from user import create_user, get_user_info, update_user_schedule, update_user_starred, count_stars
 from scheduling import noConflict, convertTimeStringToDictionary
 
