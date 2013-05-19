@@ -7,12 +7,13 @@ updateSchedule = (schedule) ->
   window.theSchedule.draw()
   refresh()
 
-getAndUpdateSchedule = (schedule) ->
+getAndUpdateSchedule = (schedule, cb) ->
   getAllSections (sections) ->
     console.log 'new window.scheduledSections', sections
     window.scheduledSections = sections
     $.getJSON '/schedule', (schedule) ->
       updateSchedule schedule
+      cb? schedule
 
 addSection = (section) ->
   $.ajax

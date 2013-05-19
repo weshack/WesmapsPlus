@@ -23,9 +23,9 @@ def get_all_courses(conn):
         ret[summary['id']] = summary
     return ret
 
-# @app.route('/all')
-# def get_all():
-#     return simplejson.dumps(get_all_courses(g.db))
+@app.route('/all')
+def get_all():
+    return simplejson.dumps(get_all_courses(g.db))
 
 @app.route("/")
 def index():

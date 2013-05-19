@@ -141,6 +141,7 @@ def get_instructors_for_section(conn, section):
     instructors = []
 
     for professor in prof_string.split(';'):
+        if not professor: continue
         instructors.append( get_instructor(conn, professor) )
 
     return instructors
@@ -154,6 +155,7 @@ def get_instructors_for_course(conn, courseid):
     for item in cursor:
         if not item[0]: continue
         for professor in item[0].split(';'):
+            if not professor: continue
             instructors.append( get_instructor(conn, professor) )
     
     return instructors

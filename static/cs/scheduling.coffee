@@ -27,17 +27,12 @@ timeRangeToMilitary = (ts) ->
 
   outTime
 
-noConflict = (currentSchedule, newCourse) ->
-  for courseid in currentSchedule
-    currentCourse = currentSchedule[courseid]
-    for day in days
-      if day in currentCourse
-        for courseTime in currentCourse[day]
-          [startTime, endTime] = courseTime
-          if day in newCourse
-            for time in newCourse[day]
-              if startTime <= time[0] <= endTime or time[0] <= startTime <= time[1]
-                return false
-  true
-
-
+isThereConflict = (currentSchedule, newCourse) ->
+  for courseid, course of currentSchedule
+    for day, times of course
+      for [start, end] in times
+        if newCourse[day]
+          for [ostart, oend] in newCourse[day]
+            if start <= ostart <= end or ostart <= start <= oend
+                return yes
+  no

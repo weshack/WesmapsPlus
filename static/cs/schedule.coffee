@@ -3,7 +3,9 @@ class Schedule
   this.earliest = 8
   this.latest = 22
 
-  this.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a']
+  this.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550']
+
+  this.allDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
   constructor: (courseData, $wrapper) ->
     @courseData = courseData
@@ -16,7 +18,7 @@ class Schedule
 
     @$wrapper = $rel
 
-    for d in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    for d in Schedule.allDays
       $newDay = $("<div class=day day-#{d}'><div class='relative'></div></div>")
       @$wrapper.append($newDay)
       dayAbbrev = d.substring(0,3)
@@ -44,10 +46,13 @@ class Schedule
 
     for course, days of @courseData
 
-      if course in @colors
-        thisColor = colors[course]
+      console.log 'checking', course
+
+      if @colors[course]
+        thisColor = @colors[course]
+        console.log 'using existingi color', thisColor, 'for', course
       else
-        thisColor = Schedule.possColors.pop()
+        @colors[course] = thisColor = Schedule.possColors[Math.floor( Math.random() * 10 )]
 
       for day, times of days
         for t in times

@@ -110,6 +110,7 @@ refreshList = (courseIds, mode, courseid, force = false) ->
   if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
+    loadCourse courseid
 
   currentCourseIds = courseIds
   currentMode = mode
@@ -134,11 +135,15 @@ getFullCourseInfo = (id, cb) ->
 
 renderCourseInfo = (courseInfo) ->
   console.log courseInfo
+  $el = createCourseInfoEl courseInfo
+  $("#content").html $el
+
+loadCourse = (courseid) ->
+  getFullCourseInfo courseid, (course) ->
+    renderCourseInfo course
 
 selectCourse = (courseid, switchToMode) ->
   refreshList currentCourseIds, switchToMode or currentMode, courseid
-  getFullCourseInfo courseid, (course) ->
-    renderCourseInfo course
 
 createCourseEl = (course) ->
   $el = $ courseTemplate course
@@ -164,30 +169,101 @@ updateCourseEl = (id) ->
     allCourses[id].stars = course.stars
     $("#course-result-#{id}").replaceWith createCourseEl(course)
 
-courseInfoTemplate = ({department, number, sections}) ->
-  code = "#{department}#{number}"
+isSectionInSchedule = (section) ->
+  section._uid.toString() in window.scheduledSections
 
+createCourseInfoEl = (courseInfo) ->
+  console.log courseInfoTemplate courseInfo
+
+  $el = $ courseInfoTemplate courseInfo
+
+  $el.find(".star-character").on 'click', ->
+    courseid = courseInfo._uid
+    if courseid in window.starredCourses
+      unstarCourse courseid, =>
+        refresh()
+    else
+      starCourse courseid, =>
+        refresh()
+
+  for section, index in courseInfo.sections
+    $el.append createSectionInfoEl index, section
+
+  $el
+
+courseInfoTemplate = ({department, number, sections, title, description, _uid}) ->
+  code = "#{department}#{number}"
+  console.log 'courseinfotempl'
 
   ret = """
-
-
+    <div class='course-info'>
+      <div class='star-container'>
+        <span class='star-character'>&#9734;</span>
+        <span class='star-count'>#{allCourses[_uid].stars}</span>
+      </div>
+      <h1>#{code}</h1>
+      <h3>#{title}</h3>
+      <p class='course-info-description'>#{description}</p>
+    </div>
   """
-
-  for section in sections
-    ret += sectionInfoTemplate section
 
   ret
 
-sectionInfoTemplate = ({times}) ->
+createSectionInfoEl = (index, section) ->
+  console.log 'sss'
+  $el = $ sectionInfoTemplate index, section
+
+  $el.find('.section-add').on 'click', ->
+    addSection section._uid
+    refresh()
+
+  $el.find('.section-remove').on 'click', ->
+    removeSection section._uid
+    refresh()
+
+  $scheduleEl = $el.find '.section-schedule'
+
+  if isSectionInSchedule section
+    new SectionSchedule window.theSchedule.courseData, {}, $scheduleEl
+
+  else
+    new SectionSchedule window.theSchedule.courseData, section.times, $scheduleEl
+
+  $el
+
+
+naturalLanguageJoin = (names) ->
+  if names.length == 1 then return names[0]
+  [fsts..., lst] = [names.slice(0, -1), names.slice(-1)]
+  fsts.join(' , ') + " and " + lst
+
+toOrdinal = ['first', 'second', 'third', 'fourth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'sixteenth', 'seventeenth']
+
+
+
+sectionInfoTemplate = (index, {_uid, times, instructors}) ->
+  sectionInSchedule = _uid.toString() in window.scheduledSections
+  console.log "SECTION IN SCHEDULE"
+  sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
+  sectionConflicts = isThereConflict window.theSchedule.courseData, times
+  professorOrProfessors = if instructors.length > 1 then "professors" else 'professor'
+  formattedInstructors = naturalLanguageJoin instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
+
+  naturalLanguageText = "The <b>#{toOrdinal[index]}</b> section of this class meets at #{scheduleToString( times )}. It is taught by #{professorOrProfessors} #{formattedInstructors}\. "
+
+  if sectionInSchedule
+    naturalLanguageText += "<b><span class='color-darkblue'>You have already added this section to your schedule.</span></b>"
+
   """
-
-
-
+  <div class='section' id='section-#{_uid}'>
+    <div class='section-schedule #{sectionInScheduleClass}'><div>
+    <button class='section-add'>Add to my schedule</button>
+    <button class='section-remove'>Remove from my schedule</button>
+    <p class='section-natural-language-text'>#{naturalLanguageText}</p>
+  </div>
   """
 
 days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-
-
 
 courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
   isStarred = id in window.starredCourses
@@ -291,14 +367,17 @@ autocomplete = (term, cb) ->
   $.getJSON '/search_by_title', name: term, (results) ->
     cb results
 
+updateSearchField = (v) ->
+  if v.length
+    autocomplete v, (courseResults) ->
+      #updateCourseResults courseResults
+      refreshList courseResults, currentMode
+  else
+    refreshList allCourseIds, currentMode
+
 $ ->
   $("#course-search").on 'keyup', ->
-    if @value.length
-      autocomplete @value, (courseResults) ->
-        #updateCourseResults courseResults
-        refreshList courseResults, currentMode
-    else
-      refreshList allCourseIds, currentMode
+    updateSearchField @value
 
   window.theSchedule = new Schedule({}, $('#schedule'))
   getAndUpdateSchedule()

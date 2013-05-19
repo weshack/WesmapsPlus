@@ -13,6 +13,9 @@
                 </script>
 		<script src="/static/js/all_courses.js"></script>
 		<script src="/static/js/schedule_testing.js"></script>
+		<script src="/static/js/scheduling.js"></script>
+		<script src="/static/js/natural_language.js"></script>
+		<script src="/static/js/section_schedule.js"></script>
 		<script src="/static/js/schedule.js"></script>
 		<script src="/static/js/app.js"></script>
 	  <link href="static/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -29,7 +32,14 @@
 				<nav id="main">
 					<div class="relative">
 						<h1 id="title">WesMaps+</h1>
-						<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
+						<!-- <div id="search-input-container"> -->
+                                                        <input id="course-search"
+						               type="text"
+						               placeholder="Search
+						                            for a course or course
+						                            number"></input>
+                                                        <!-- <img src="/static/images/cancel_search.png"></img> -->
+                                                <!-- </div> -->
 						<div id="schedule"></div>
 						<div id="notification"></div>
 					</div>
@@ -58,7 +68,10 @@
 
                                 
 			</div>
-			<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
+			<footer>Built by Anastasis Germanidis, Tobias
+			Butler, Max Dietz, and Justin Raymond during
+			the <a href="http://weshack.com">Wesleyan
+			Senior Week Hackathon</a>.</footer>
 			{% block footer %}
 			{% endblock %}
 		</div>
