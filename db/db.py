@@ -23,7 +23,7 @@ def build_full_course_obj(row):
              'department': row[9],
              'gradingMode': row[10],
              'description': row[11],
-			 'sections': [] }
+             'sections': [] }
 	
 def build_full_section_obj(row):
 	return { '_uid': row[0],
@@ -40,7 +40,6 @@ def build_full_section_obj(row):
 	'additional_requirements': row[11],
 	'times': row[12],
 	'seatsAvailable': row[13],
-	'professor': row[14],
 	'location': row[15],
 	'major_readings': row[16],
 	'enrollmentLimit': row[17],
@@ -86,26 +85,38 @@ def get_sections_and_times_for_course(conn, courseid):
 def get_all_information(conn, courseid):
     c = conn.cursor()
     courseDict = build_full_course_obj(c.execute("select * from courses where _uid = " + str(courseid)).next())
-	sectionCursor = get_sections_for_course(conn, courseid)
-	while True
-		try:
-			courseDict['sections'].append(build_full_section_obj(sectionCursor.next()))
-		except:
-			break
-	return courseDict
-	
-	
+    sectionCursor = get_sections_for_course(conn, courseid)
+    while True:
+        try:
+            section = sectionCursor.next()
+            sectionObj = build_full_section_obj(section)
+            sectionObj['instructors'] = get_instructors_for_section(conn, section[0])
+            courseDict['sections'].append(sectionObj)
+        except:
+            break
+    courseDict['instructors'] = get_instructors_for_course(conn, courseid)
+    return courseDict
 
-def get_instructors_for_course(conn, courseid):
+def get_instructors_for_section(conn, section):
     c = conn.cursor()
-    prof_string = c.execute("select professor from sections where course_uid = " + str(courseid)).next()
-    
+    prof_string = c.execute("select professor from sections where _uid = " + str(section)).next()[0]
+
     instructors = []
 
     for professor in prof_string.split(';'):
-        instructors.append( c.execute("select * from professors where _uid = " + professor).next() )
-    
+        instructors.append( c.execute("select name from professors where _uid = " + professor).next()[0] )
+
     return instructors
 
+def get_instructors_for_course(conn, courseid):
+    c = conn.cursor()
+    cursor = c.execute("select professor from sections where course_uid = " + str(courseid)).next()
     
+    instructors = []
+
+    for item in cursor:
+        for professor in item[0].split(';'):
+            instructors.append( c.execute("select name from professors where _uid = " + professor).next()[0] )
+    
+    return instructors
 
