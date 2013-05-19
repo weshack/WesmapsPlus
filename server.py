@@ -20,11 +20,11 @@ def get_all_courses(conn):
         summary = get_course_summary(conn, courseid)
         ret[summary['id']] = summary
     return ret
-        
+
 @app.route("/")
 def index():
     userinfo = get_user_info(session)
-    return render_template("index.html", sections = userinfo['sections'], starred = userinfo['starred'], courses = get_all_courses(g.db), allSections = get_courseids_for_all_sections(g.db)) 
+    return render_template("index.html", sections = userinfo['sections'], starred = map(int, userinfo['starred']), courses = get_all_courses(g.db), allSections = get_courseids_for_all_sections(g.db)) 
 
 @app.route("/search_by_title")
 def search():
@@ -54,7 +54,6 @@ def course_schedule(courseid):
 		times['section'] = convertTimeStringToDictionary(get_times_for_section(g.db, section))
 	return simplejson.dumps(times)
 
-	
 @app.route('/star/<courseid>', methods = ['POST', 'DELETE'])
 def update_starred(courseid = ''):
     starred = set( get_user_info(session)['starred'] )

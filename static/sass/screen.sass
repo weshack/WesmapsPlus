@@ -1,5 +1,8 @@
 @import compass/reset
 
+$subj-list-width: 350px
+$course-list-width: 500px
+
 * 
   box-sizing: border-box
 
@@ -40,33 +43,48 @@ a:hover
 
   #subject-list
     position: absolute
-    width: 200px
+    width: $subj-list-width
     left: 0
     top: 36px
     bottom: 0
     border-right: 1px solid black
     overflow-y: scroll
+    cursor: pointer
 
     li
-      padding: 5px
+      cursor: pointer
+      padding: 10px
       border-bottom: 1px solid #444
+      font-size: 15px
 
-      .course-result
-        padding: 5px
-        border-bottom: 1px solid #444
+    .selected-category
+      background: rgb(237, 239, 250)
+      //font-weight: bold
+
+    .category-separator 
+      height: 5px
+      padding: 0
+      background: lightgrey
+
+
 
   #course-list
     position: absolute
-    width: 300px
-    left: 200px
+    width: $course-list-width
+    left: $subj-list-width
     top: 36px
     bottom: 0
     border-right: 1px solid black
     overflow-y: scroll
 
+    .course-result
+      padding: 5px
+      border-bottom: 1px solid #444
+      padding: 10px
+
   #content
     position: absolute
-    left: 400px
+    left: 800px
     top: 36px
     right: 0
     height: 100%
@@ -89,18 +107,29 @@ a:hover
     #course-search
       position: absolute
       top: 0
-      left: 150px
+      left: 153px
       margin: 0
       height: 36px
       line-height: 36px
-      width: 302px
+      width: $course-list-width
       box-shadow: none
       border-bottom: 1px solid black
+
+    #notification
+      position: absolute
+      top: 0
+      left: 900px
+      right: 0
+      height: 100%
+      margin-top: 10px
+
+    .color-red
+      color: red
 
     #schedule
       position: absolute
       top: 0
-      left: 450px
+      left: 550px
       right: 0
       height: 100%
 
@@ -165,6 +194,23 @@ a:hover
 .course-results-department-name
   font-weight: bold
   display: block
+
+.popup
+  position: absolute
+
+.count-indicator
+  border-radius: 15px
+  border: 1px solid rgb(22, 137, 173)
+  padding: 3px
+  font-size: 9px
+  background: rgb(22, 137, 173)
+  color: white
+  font-weight: bold 
+  float: right
+  width: 30px
+  text-align: center
+
+
     
 footer
   position: absolute

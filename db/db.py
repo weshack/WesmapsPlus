@@ -75,13 +75,14 @@ def search_for_course_by_title(conn, term):
     c = conn.cursor()
     return c.execute("""
       select * from courses
-      where title like '%"""+term+"""%' and semester = 'Fall 2013'
+      where (title like '%"""+term+"""%' or department like '%"""+term+"""%') and semester = 'Fall 2013'
    """)
 
 def get_course_summary(conn, courseid):
     c = conn.cursor()
     
     summary = build_course_summary_obj( c.execute("select * from courses where _uid = " + str(courseid)).next() )
+    
     #summary['sections'] = get_section_ids_for_course(conn, courseid)
     return summary
 

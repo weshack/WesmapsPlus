@@ -7,11 +7,12 @@
 		<script src="/static/js/underscore-min.js"></script>
 		<script src="/static/js/backbone-min.js"></script>
                 <script>
-                        var courses = {{ courses|tojson|safe }};
+                        var allCourses = {{ courses|tojson|safe }};
                         var allSections = {{ allSections|tojson|safe }};
                         var scheduledSections = {{ sections|tojson|safe }};
                         var starredCourses = {{ starred|tojson|safe }};
                 </script>
+		<script src="/static/js/schedule_testing.js"></script>
 		<script src="/static/js/schedule.js"></script>
 		<script src="/static/js/app.js"></script>
 	  <link href="static/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -30,6 +31,7 @@
 						<h1 id="title">WesMaps+</h1>
 						<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
 						<div id="schedule"></div>
+						<div id="notification"></div>
 					</div>
 				</nav>
 			{% endblock %}

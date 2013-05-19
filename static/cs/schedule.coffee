@@ -1,14 +1,3 @@
-window.theData = {
-	'COMP112-02': {
-		'Tuesday': [[9, 10.33]],
-		'Thursday': [[9, 10.33]]
-	},
-	'COMP212-02': {
-		'Monday': [[14.66, 16]],
-		'Friday': [[14.66, 16]]
-	},
-}
-
 class Schedule
 
 	this.earliest = 8
@@ -37,12 +26,24 @@ class Schedule
 
 		this.draw()
 
-	highlightCourse: (course) ->
-		$('.mtg').addClass('fade');
-		$('.mtg-' + course).removeClass('fade');
+	highlightCourse: (course, x, y) =>
+    {title} = allCourses[allSections[course]]
+    $('.mtg').addClass('fade')
+    $('.mtg-' + course).removeClass('fade')
+    #@popup = @displayPopup title, x, y
+    notify title
 
-	lowlightCourses: ->
-		$('.mtg').removeClass('fade')
+  # displayPopup: (title, x, y) ->
+  #   @popup = $ "<p class='popup'>#{title}</p>"
+  #   @popup.css left: x, top: y
+  #   $("#wrapper").append @popup
+  #   @popup
+
+	lowlightCourses: =>
+    $('.mtg').removeClass('fade')
+    notify ""
+    #@popup.remove()
+    #delete @popup
 
 	draw: ->
 		for day, $el of @days
@@ -54,7 +55,6 @@ class Schedule
 				thisColor = colors[course]
 			else
 				thisColor = Schedule.possColors.pop()
-
 
 			for day, times of days
 				for t in times
@@ -73,17 +73,10 @@ class Schedule
 
 
 					thisSchedule = this
-					$thisMtg.hover(() ->
-						thisSchedule.highlightCourse($(this).data('course'))
+					$thisMtg.hover( (evt) ->
+						thisSchedule.highlightCourse($(this).data('course'), evt.pageX, evt.pageY)
 					,() ->
 						thisSchedule.lowlightCourses()
 					)
 
 					@days[day].append($thisMtg)
-
-
-
-
-
-
-

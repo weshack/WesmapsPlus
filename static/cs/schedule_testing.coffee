@@ -1,5 +1,5 @@
 conflictDetected = ->
-  console.log 'conflict detected!'
+  notify "The course you're trying to add conflicts with your schedule.", true, 3000
 
 updateSchedule = (schedule) ->
   console.log 'new schedule', schedule
@@ -46,7 +46,7 @@ starCourse = (courseid) ->
     url: "/star/#{courseid}"
     dataType: 'json'
     success: (newStarred) ->
-      starredCourses = newStarred
+      starredCourses = newStarred.map (c) -> parseInt c
 
 unstarCourse = (courseid) ->
   $.ajax
@@ -54,20 +54,20 @@ unstarCourse = (courseid) ->
     url: "/star/#{courseid}"
     dataType: 'json'
     success: (newStarred) ->
-      starredCourses = newStarred
+      starredCourses = newStarred.map (c) -> parseInt c
 
 getStarredCourses = ->
   $.getJSON '/starred', (starred) ->
-    starredCourses = starred
+    starredCourses = starred.map (c) -> parseInt c
 
 filterForSubject = (courses, subj) ->
-  resultsByDept = buildCourseResults results
+  resultsByDept = buildCourseResults courses
   resultsByDept[subj] or []
 
 filterForStarred = (courses) ->
   ret = []
   for course in courses
-    if course.id.toString() in starredCourses
+    if course.id in starredCourses
       ret.push course
   ret
 
