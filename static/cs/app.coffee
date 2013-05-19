@@ -214,14 +214,19 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
 createSectionInfoEl = (index, section) ->
   console.log 'sss'
   $el = $ sectionInfoTemplate index, section
-
-  $el.find('.section-add').on 'click', ->
-    addSection section._uid
-    refresh()
-
-  $el.find('.section-remove').on 'click', ->
-    removeSection section._uid
-    refresh()
+  if isSectionInSchedule section
+    $el.find('.section-update').addClass("remove-section") # won't work since this needs
+    $el.find('.section-update').removeClass("add-section") # to be run before click!
+    $el.find('.section-update').on 'click', ->
+      removeSection section._uid
+      refresh()
+  else
+    $el.find('.section-update').addClass("add-section") # won't work since this needs
+    $el.find('.section-update').removeClass("remove-section") # to be run before click!
+    $el.find('.section-update').on 'click', ->
+      if not isThereConflict window.theSchedule.courseData, section
+        addSection section._uid
+        refresh()
 
   $scheduleEl = $el.find '.section-schedule'
 
@@ -271,7 +276,6 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
 
   if sectionInSchedule
     naturalLanguageText += "<b><span class='color-darkblue'>You have already added this section to your schedule.</span></b>"
-
   else if sectionConflicts
     naturalLanguageText += "<b><span class='color-red'>Unfortunately, you cannot add this section to your schedule because you have added another class at the same time.</span></b>"
 
@@ -279,8 +283,7 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
   """
   <div class='section' id='section-#{_uid}'>
     <div class='section-schedule #{sectionInScheduleClass}'><div>
-    <button class='section-add'>Add to my schedule</button>
-    <button class='section-remove'>Remove from my schedule</button>
+    <button class='section-update'></button>
     <p class='section-natural-language-text'>#{naturalLanguageText}</p>
   </div>
   """
