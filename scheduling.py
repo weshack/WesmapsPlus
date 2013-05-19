@@ -1,15 +1,18 @@
 import datetime
 
+days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 def convertTimeStringToDictionary(timeString):
 	times = timeString.split(";")[:-1]
 	schedule = {}
 	for date in times:
-		for i in range(0,7):
-			if date.strip()[i] != '.':
-				if datetime.datetime(1,1,i+7).strftime('%A') in schedule:
-					schedule[datetime.datetime(1,1,i+7).strftime('%A')] += [timeRangeToMilitary(date.strip()[8:])]
+                date = date.strip()
+                for i in range(0,7):
+			if date[i] != '.':
+				if days[i] in schedule:
+                                        schedule[days[i]].append( timeRangeToMilitary(date[8:]) )
 				else:
-					schedule[datetime.datetime(1,1,i+7).strftime('%A')] = [timeRangeToMilitary(date.strip()[8:])]
+					schedule[days[i]] = [timeRangeToMilitary(date[8:])]
 	return schedule
 	
 
@@ -17,7 +20,7 @@ def noConflict(currSchedule, newCourse):
 	''' Tests two times, and returns True if they do not conflict '''
 	for currCourseID in currSchedule:
 		currCourse = currSchedule[currCourseID]
-		for day in ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]:
+		for day in days:
 			if day in currCourse:
 				for courseTime in currCourse[day]:
 					startTime = courseTime[0]
@@ -41,5 +44,7 @@ def timeRangeToMilitary(timeString):
 			hour = str(int(hour) % 12 + 12)
 		if len(hour) < 2:
 			hour = '0' + hour
-		outTime.append(int(hour)+(float(minute) / 60.0))
+                outTime.append(int(hour)+(float(minute) / 60))
+		#outTime.append(int(hour)+(float('0.' + minute)))
+        
 	return outTime

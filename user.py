@@ -1,6 +1,7 @@
 import uuid
 from pymongo import MongoClient
 
+
 client = MongoClient()
 db = client.wesmaps
 users = client.wesmaps.users
@@ -36,4 +37,4 @@ def update_user_schedule(userid, new_sections):
 def update_user_starred(userid, new_starred):
     return users.update({'id': userid}, {'$set': {'starred': new_starred}})
 
- 
+

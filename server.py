@@ -91,7 +91,6 @@ def handle_section(section):
 
     if request.method == 'DELETE': 
         # Removing a course
-        print 'rargs', request.args.get('section')
         try:
             sections.remove(section)
         except:
@@ -124,9 +123,7 @@ def handle_section(section):
 
 @app.route("/schedule")
 def get_schedule():
-    return simplejson.dumps( get_sections_for_user(session) )
-
-    
+    return simplejson.dumps( get_sections_for_user(session) )    
 	
 if __name__ == "__main__":
     app.secret_key = 'b6a7ab74af724b1e948b42a30c959cb8'
