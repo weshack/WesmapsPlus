@@ -198,8 +198,9 @@ $ ->
   fillSubjectList()
 
   refreshList _.values(allCourses), 'all'
-
+  $("#content").hide()
   $("#course-list li").on 'mousedown', () ->
+    $("#content").show()
     title = ($(this).text().split("\n")[2]).replace /^\s+|\s+$/g, ""
     uid = -1
     for course in _.values(allCourses)
