@@ -3,8 +3,7 @@ conflictDetected = ->
 
 updateSchedule = (schedule) ->
   console.log 'new schedule', schedule
-  window.theSchedule.courseData = schedule
-  window.theSchedule.draw()
+  window.theSchedule.updateCourseData(schedule)
 
 getAndUpdateSchedule = (schedule) ->
   $.getJSON '/schedule', (schedule) ->
@@ -29,7 +28,6 @@ removeSection = (section) ->
     data: {section}
     dataType: 'json'
     success: ->
-      scheduledSections = newSections
       getAndUpdateSchedule()
 
 getSchedule = ->

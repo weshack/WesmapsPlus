@@ -6,3 +6,4 @@ static/.sass-cache/*
  *.sassc
 /static/js/*.js
 /static/js/courses.js
+/static/js

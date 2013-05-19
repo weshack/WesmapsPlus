@@ -1,14 +1,3 @@
-window.theData = {
-	'COMP112-02': {
-		'Tuesday': [[9, 10.33]],
-		'Thursday': [[9, 10.33]]
-	},
-	'COMP212-02': {
-		'Monday': [[14.66, 16]],
-		'Friday': [[14.66, 16]]
-	},
-}
-
 class Schedule
 
 	this.earliest = 8
@@ -35,6 +24,10 @@ class Schedule
 			$newDay.append("<div class='dayName'>#{dayAbbrev}</div>")
 			@days[d] = $newDay.children('.relative')
 
+		this.draw()
+
+	updateCourseData: (courseData) ->
+		@courseData = courseData
 		this.draw()
 
 	highlightCourse: (course) ->

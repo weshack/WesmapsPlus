@@ -73,8 +73,9 @@ $ ->
     autocomplete @value, (courseResults) ->
       updateCourseResults courseResults
 
-  window.theSchedule = new Schedule(window.theData, $('#schedule'))
-
+  window.theSchedule = new Schedule({}, $('#schedule'))
+  window.theMenu = new Menus(courses)
+  getAndUpdateSchedule()
   fillSubjectList()
 
 
