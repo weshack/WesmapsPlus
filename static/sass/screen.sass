@@ -42,6 +42,8 @@ a:hover
     ul 
       list-style-type: none
 
+    user-select: none
+
   #subject-list
     position: absolute
     width: $subj-list-width
@@ -95,6 +97,9 @@ a:hover
     overflow-y: scroll
     cursor: pointer
 
+    /* li:nth-child(odd)
+    /*   background-color: #E8E8E8
+
     .course-result
       border-bottom: 1px solid #444
       padding: 10px
@@ -120,13 +125,12 @@ a:hover
     height: 100%
 
     h1
+      margin: 5 200 0 100
       padding: 0
       font-size: 20px
       font-weight: 200
-      color: #222222
-      border-radius: 15px
-      border-color: red
-      border-style: solid
+      border: 3px solid red
+      padding: 10px
 
     h2, h3
       margin: 0 0 10 0
@@ -257,6 +261,12 @@ a:hover
 
 .course-result-professor
   font-size: 13px
+
+.course-result-name
+  //white-space: nowrap
+  //text-overflow: ellipsis
+  //overflow: hidden
+  width: 270px
 
 .starred-course-result
   background: #FFFDE8

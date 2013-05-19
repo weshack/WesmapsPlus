@@ -76,7 +76,7 @@ getCourseResultEl = (id) ->
   $("#course-result-#{id}")
 
 refreshList = (courseIds, mode, courseid, force = false) ->
-  if (courseid and currentCourseId != courseid) or force
+  if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
 
@@ -107,14 +107,13 @@ refreshList = (courseIds, mode, courseid, force = false) ->
         relevant = filterForSubject currentCourseIds, mode
         showCourses relevant
 
-  if (courseid and currentCourseId != courseid) or force
+  if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
 
   currentCourseIds = courseIds
   currentMode = mode
   currentCourseId = courseid
-
 
 buildCourseResults = (courseIds) ->
   resultsByDepartment = {}
@@ -133,18 +132,13 @@ getFullCourseInfo = (id, cb) ->
   $.getJSON "/course/#{id}", (result) ->
     cb result
 
+renderCourseInfo = (courseInfo) ->
+  console.log courseInfo
+
 selectCourse = (courseid, switchToMode) ->
-  $("#content").show()
-  $.getJSON "/course/#{courseid}", (data) ->
-    $("#course-code").html "#{data['department']}#{data['number']}"
-    $("#course-name").html data['title']
-    $("#credit-data").html  data['credit']
-    $("#gened-data").html  data['genEdArea']
-    $("#graded-data").html  data['gradingMode']
-    $("#prereq-data").html data['prerequisites']
-    $("#description").html data['description']
-    refreshList currentCourseIds, switchToMode or currentMode, courseid
-  
+  refreshList currentCourseIds, switchToMode or currentMode, courseid
+  getFullCourseInfo courseid, (course) ->
+    renderCourseInfo course
 
 createCourseEl = (course) ->
   $el = $ courseTemplate course
@@ -170,10 +164,29 @@ updateCourseEl = (id) ->
     allCourses[id].stars = course.stars
     $("#course-result-#{id}").replaceWith createCourseEl(course)
 
-courseInfoTemplate = ->
-  """
+courseInfoTemplate = ({department, number, sections}) ->
+  code = "#{department}#{number}"
+
+
+  ret = """
+
 
   """
+
+  for section in sections
+    ret += sectionInfoTemplate section
+
+  ret
+
+sectionInfoTemplate = ({times}) ->
+  """
+
+
+
+  """
+
+days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 
 
 courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
@@ -340,8 +353,9 @@ updateCourseResults = (results) ->
 
 
 autocomplete = (term, cb) ->
-  $.getJSON '/search_by_title', name: term, (results) ->
-    cb results
+  $.getJSON '/search_by_professor', prof: term, (results1) ->
+    $.getJSON '/search_by_title', name: term, (results) ->
+      cb results1.concat(results)
 
 $ ->
   $("#course-search").on 'keyup', ->
@@ -351,7 +365,7 @@ $ ->
         refreshList courseResults, currentMode
     else
       refreshList allCourseIds, currentMode
-  $("#content").hide()
+
   window.theSchedule = new Schedule({}, $('#schedule'))
   getAndUpdateSchedule()
 
@@ -362,3 +376,5 @@ $ ->
   console.log scheduleToString({'Monday': [[14.66, 16.00]], 'Friday': [[14.66, 16.00]]})
 
   refreshList allCourseIds, 'all', null
+
+
