@@ -2,16 +2,76 @@
 	<head>
 		<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
 		<link href='individual-course.css' rel='stylesheet' type='text/css'>
+		<link href='node.js' type="script/javascript">
+		<script type="javascript">
+		var addSection, currSchedule, data, removeSection, _ref,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+this.handleSection = function(section) {
+  var currSchedule, data, _ref;
+
+  data = JSON.parse($.getJSON("/courses"));
+  currSchedule = JSON.parse($.getJSON("/schedule"));
+  if (_ref = data['_uid'], __indexOf.call(currSchedule, _ref) >= 0) {
+    removeSection(section);
+    return $('#course-updater')["class"] = 'add';
+  } else {
+    addSection(section);
+    return $('#course-updater')["class"] = 'remove';
+  }
+};
+
+addSection = function(section) {
+  return $.ajax({
+    type: 'POST',
+    url: "/schedule/" + section,
+    data: {
+      section: section
+    },
+    success: function(newSections) {
+      return console.log(newSections);
+    },
+    error: function() {
+      return conflictDetected();
+    }
+  });
+};
+
+removeSection = function(section) {
+  return $.ajax({
+    type: 'DELETE',
+    url: "/schedule/" + section,
+    data: {
+      section: section
+    },
+    success: function(newSections) {
+      return console.log(newSections);
+    },
+    error: function() {
+      return conflictDetected();
+    }
+  });
+};
+
+data = JSON.parse($.getJSON("/courses/"));
+
+currSchedule = JSON.parse($.getJSON("/schedule"));
+
+if (true) {
+  $('#course-updater')["class"] = 'add';
+} else {
+  $('#course-updater')["class"] = 'remove';
+}
+
+$("body").html('<h1><div class=course-code>#{data[\'department\']}#{data[\'number\']}</div><span class=course-name>#{data[\'title\']}</span></h1>\n<div class=container>\n	<button id=\'course-updater\' onClick="addSection"></button>\n	<div class=header>Credit</div>\n	<div class=data>#{data[\'credit\']}</div>\n	<div class=header>GenEd</div>\n	<div class=data>#{data[\'genEdArea\']}</div>\n	<div class=header>Graded?</div>\n	<div class=data>#{gradingMode}</div>\n	<div class=header>Prerequisites</div>\n	<div class=data>#{data[\'prerequisites\']}</div>\n</div>\n<p>data[\'description\']</p>');
+</script>
 	</head>
 	<body>
 		<h1><div class=course-code>MB&amp;B 181</div><span class=course-name>Principles of Biology I: Cell Biology and Molecular Basis of Heredity</span></h1>
 		<h2></h2>
 		<h3>Crosslisting: BIOL 181</h3>
 		<div class=container>
-			<form name="input" action="/courses" method="DELETE" id="form1" >
-				<input type="hidden" name="sections" value="5">
-			</form>
-			<button form="form1" type="submit" class="add"></button>
+			<button id="course-updater"></button>
 			<div class=header>Credit</div>
 			<div class=data>1</div>
 			<div class=header>GenEd</div>
