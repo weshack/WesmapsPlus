@@ -59,7 +59,7 @@ getStarredCourses = ->
     starredCourses = starred
 
 filterForSubject = (courses, subj) ->
-  resultsByDept = buildCourseResults results
+  resultsByDept = buildCourseResults courses
   resultsByDept[subj] or []
 
 filterForStarred = (courses) ->
