@@ -162,6 +162,12 @@ updateCourseEl = (id) ->
     allCourses[id].stars = course.stars
     $("#course-result-#{id}").replaceWith createCourseEl(course)
 
+courseInfoTemplate = ->
+  """
+
+  """
+
+
 courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
   isStarred = id in window.starredCourses
   starredClass = if isStarred then "starred-course-result" else ""
@@ -280,30 +286,6 @@ $ ->
 
   fillSubjectList()
 
-<<<<<<< HEAD
   refreshList allCourseIds, 'all', null
 
 
-=======
-  refreshList _.values(allCourses), 'all'
-  $("#content").hide()
-  $("#course-list li").on 'mousedown', () ->
-    $("#content").show()
-    title = ($(this).text().split("\n")[2]).replace /^\s+|\s+$/g, ""
-    uid = -1
-    for course in _.values(allCourses)
-      if title == course['title'].replace /^\s+|\s+$/g, ""
-        uid = course['id']
-        break
-    $.getJSON "/course/#{uid}", (data) ->
-      $("#course-code").html "#{data['department']}#{data['number']}"
-      $("#course-name").html data['title']
-      $("#credit-data").html  data['credit']
-      $("#gened-data").html  data['genEdArea']
-      $("#graded-data").html  data['gradingMode']
-      $("#prereq-data").html data['prerequisites']
-      $("#description").html data['description']
-
-
-      
->>>>>>> 235665a039c0d2ff5235538f769ee43af42e633f

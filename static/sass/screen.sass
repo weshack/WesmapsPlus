@@ -127,9 +127,6 @@ a:hover
       padding: 0
       font-size: 20px
       font-weight: 200
-      color: #222222
-      border-radius: 15px
-      -moz-border-radius: 15px
       border: 3px solid red
       padding: 10px
 
@@ -147,7 +144,6 @@ a:hover
       font-size: 70%
 
     #header
-      background-color: red
       color: white
       font-weight: bold
       text-align: center
@@ -179,31 +175,29 @@ a:hover
     z-index: 10
 
     h1#title
-      background-color: rgba(255, 0, 0, 0.8)
-      color: white
-      border: 1px solid black
       position: absolute
-      padding-left: 10px
-      width: $subj-list-width
+      top: 0
+      left: 10px
+      font-weight: 300
       font-size: 26px
-      line-height: 34px
+      line-height: $header-height
 
     #course-search
       position: absolute
       top: 0
-      left: $subj-list-width
+      //left: $subj-list-width
+      left: 153px
       margin: 0
       height: $header-height
       line-height: $header-height
       box-shadow: none
       border-bottom: 1px solid black
 
-    
-
     #notification
       position: absolute
       top: 0
-      left: $subj-list-width + $course-list-width + 350
+      //left: $subj-list-width + $course-list-width + 350
+      left: 900px
       right: 0
       height: 100%
       margin-top: 10px
@@ -214,7 +208,8 @@ a:hover
     #schedule
       position: absolute
       top: 0
-      left: $course-list-width + $subj-list-width
+      //left: $course-list-width + $subj-list-width
+      left: 550px
       right: 0
       height: 100%
 
@@ -266,9 +261,9 @@ a:hover
   font-size: 13px
 
 .course-result-name
-  white-space: nowrap
-  text-overflow: ellipsis
-  overflow: hidden
+  //white-space: nowrap
+  //text-overflow: ellipsis
+  //overflow: hidden
   width: 270px
 
 .starred-course-result

@@ -16,7 +16,6 @@ class Schedule
 
     @$wrapper = $rel
 
-
     for d in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
       $newDay = $("<div class=day day-#{d}'><div class='relative'></div></div>")
       @$wrapper.append($newDay)
@@ -26,22 +25,12 @@ class Schedule
 
     this.draw()
 
-<<<<<<< HEAD
-  highlightCourse: (course, x, y) =>
-=======
-	highlightCourse: (course, x, y) =>
->>>>>>> 235665a039c0d2ff5235538f769ee43af42e633f
+  highlightCourse: (course) =>
     {title} = allCourses[allSections[course]]
     $('.mtg').addClass('fade')
     $('.mtg-' + course).removeClass('fade')
     #@popup = @displayPopup title, x, y
     notify title
-
-  # displayPopup: (title, x, y) ->
-  #   @popup = $ "<p class='popup'>#{title}</p>"
-  #   @popup.css left: x, top: y
-  #   $("#wrapper").append @popup
-  #   @popup
 
   lowlightCourses: =>
     $('.mtg').removeClass('fade')
@@ -49,7 +38,6 @@ class Schedule
     #@popup.remove()
     #delete @popup
 
-<<<<<<< HEAD
   draw: ->
     for day, $el of @days
       $el.html('')
@@ -91,42 +79,3 @@ class Schedule
               selectCourse courseid, 'scheduled'
 
           @days[day].append($thisMtg)
-
-
-=======
-	draw: ->
-		for day, $el of @days
-			$el.html('')
-
-		for course, days of @courseData
-
-			if course in @colors
-				thisColor = colors[course]
-			else
-				thisColor = Schedule.possColors.pop()
-
-			for day, times of days
-				for t in times
-					earliest = Schedule.earliest
-					latest = Schedule.latest
-					top = (t[0] - earliest)*100 / (latest - earliest)
-					height = (t[1] - t[0])*100 / (latest - earliest)
-
-					$thisMtg = $("<div class='mtg mtg-#{course}'></div>")
-
-					$thisMtg
-						.css('top', top + '%')
-						.css('height', height + '%')
-						.css('background-color', '#' + thisColor)
-						.data('course', course)
-
-
-					thisSchedule = this
-					$thisMtg.hover( (evt) ->
-						thisSchedule.highlightCourse($(this).data('course'), evt.pageX, evt.pageY)
-					,() ->
-						thisSchedule.lowlightCourses()
-					)
-
-					@days[day].append($thisMtg)
->>>>>>> 235665a039c0d2ff5235538f769ee43af42e633f
