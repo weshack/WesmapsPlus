@@ -67,116 +67,117 @@ primaryKey = 0
 sPk = 0
 total = json_data.size
 json_data.each do | course |
-	courseuid = primaryKey
-	sections = ""
-	course['sections'].each do | section |
-		sqlStatement = 'INSERT INTO sections VALUES ( '
-		sqlStatement << sPk.to_s
-		sections << sPk.to_s
-		sections << ";"
-		sqlStatement << ', '
-		sqlStatement << courseuid.to_s
+	if course['semester'] == "Fall 2013"
+		courseuid = primaryKey
+		sections = ""
+		course['sections'].each do | section |
+			sqlStatement = 'INSERT INTO sections VALUES ( '
+			sqlStatement << sPk.to_s
+			sections << sPk.to_s
+			sections << ";"
+			sqlStatement << ', '
+			sqlStatement << courseuid.to_s
+			sqlStatement << ', "'
+			sqlStatement << section['permissionRequired'].to_s
+			sqlStatement << '", "'
+			sqlStatement << section['name'].gsub('"',"'")
+			sqlStatement << '", "'
+			if section['FR']
+				sqlStatement << section['FR']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['SO']
+				sqlStatement << section['SO']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['JR_NonMajor']
+				sqlStatement << section['JR_NonMajor']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['JR_Major']
+				sqlStatement << section['JR_Major']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['SR_NonMajor']
+				sqlStatement << section['SR_NonMajor']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['SR_Major']
+				sqlStatement << section['SR_Major']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			if section['GRAD_Major']
+				sqlStatement << section['GRAD_Major']
+			else
+				sqlStatement << 'X'
+			end
+			sqlStatement << '", "'
+			#sqlStatement << section['additional_requirements']
+			sqlStatement << "None"
+			sqlStatement << '", "'
+			sqlStatement << section['times']
+			sqlStatement << '", "'
+			sqlStatement << section['seatsAvailable'].to_s
+			sqlStatement << '", "'
+			profs = []
+			section['instructors'].each do | prof |
+				res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'").gsub(',',', ')}\"")
+				profs << res[0][0].to_s if res
+			end
+			sqlStatement << profs.join(';')
+			sqlStatement << '", "'
+			sqlStatement << section['location']
+			sqlStatement << '", "'
+			sqlStatement << section['major_readings'].gsub("\n",";").gsub('"',"'")
+			sqlStatement << '", '
+			sqlStatement << section['enrollmentLimit'].to_s
+			sqlStatement << ', "'
+			sqlStatement << section['assignments_and_examinations'].gsub('"',"'")
+			sqlStatement << '");'
+			courses.execute(sqlStatement)
+			sPk += 1
+		end
+		sqlStatement = 'INSERT INTO courses VALUES ( '
+		sqlStatement << primaryKey.to_s
 		sqlStatement << ', "'
-		sqlStatement << section['permissionRequired'].to_s
+		sqlStatement << course['genEdArea']
 		sqlStatement << '", "'
-		sqlStatement << section['name'].gsub('"',"'")
+		sqlStatement << course['prerequisites']
 		sqlStatement << '", "'
-		if section['FR']
-			sqlStatement << section['FR']
-		else
-			sqlStatement << 'X'
-		end
+		sqlStatement << course['title'].gsub('"',"'")
 		sqlStatement << '", "'
-		if section['SO']
-			sqlStatement << section['SO']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		if section['JR_NonMajor']
-			sqlStatement << section['JR_NonMajor']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		if section['JR_Major']
-			sqlStatement << section['JR_Major']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		if section['SR_NonMajor']
-			sqlStatement << section['SR_NonMajor']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		if section['SR_Major']
-			sqlStatement << section['SR_Major']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		if section['GRAD_Major']
-			sqlStatement << section['GRAD_Major']
-		else
-			sqlStatement << 'X'
-		end
-		sqlStatement << '", "'
-		#sqlStatement << section['additional_requirements']
-		sqlStatement << "None"
-		sqlStatement << '", "'
-		sqlStatement << section['times']
-		sqlStatement << '", "'
-		sqlStatement << section['seatsAvailable'].to_s
-		sqlStatement << '", "'
-		profs = []
-		section['instructors'].each do | prof |
-			res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'").gsub(',',', ')}\"")
-			profs << res[0][0].to_s if res
-		end
-		sqlStatement << profs.join(';')
-		sqlStatement << '", "'
-		sqlStatement << section['location']
-		sqlStatement << '", "'
-		sqlStatement << section['major_readings'].gsub("\n",";").gsub('"',"'")
+		sqlStatement << course['url']
 		sqlStatement << '", '
-		sqlStatement << section['enrollmentLimit'].to_s
+		sqlStatement << course['credit'].to_s
 		sqlStatement << ', "'
-		sqlStatement << section['assignments_and_examinations'].gsub('"',"'")
+		sqlStatement << course['number']
+		sqlStatement << '", '
+		sqlStatement << course['courseid']
+		sqlStatement << ', "'
+		sqlStatement << course['semester']
+		sqlStatement << '", "'
+		sqlStatement << course['department']
+		sqlStatement << '", "'
+		sqlStatement << course['gradingMode']
+		sqlStatement << '", "'
+		sqlStatement << course['description'].gsub('"',"'")
+		sqlStatement << '", "'
+		sqlStatement << sections
 		sqlStatement << '");'
 		courses.execute(sqlStatement)
-		sPk += 1
+		primaryKey += 1
+		printf("\r%0.3f%%", primaryKey.to_f/total.to_f * 100)
 	end
-	sqlStatement = 'INSERT INTO courses VALUES ( '
-	sqlStatement << primaryKey.to_s
-	sqlStatement << ', "'
-	sqlStatement << course['genEdArea']
-	sqlStatement << '", "'
-	sqlStatement << course['prerequisites']
-	sqlStatement << '", "'
-	sqlStatement << course['title'].gsub('"',"'")
-	sqlStatement << '", "'
-	sqlStatement << course['url']
-	sqlStatement << '", '
-	sqlStatement << course['credit'].to_s
-	sqlStatement << ', "'
-	sqlStatement << course['number']
-	sqlStatement << '", '
-	sqlStatement << course['courseid']
-	sqlStatement << ', "'
-	sqlStatement << course['semester']
-	sqlStatement << '", "'
-	sqlStatement << course['department']
-	sqlStatement << '", "'
-	sqlStatement << course['gradingMode']
-	sqlStatement << '", "'
-	sqlStatement << course['description'].gsub('"',"'")
-	sqlStatement << '", "'
-	sqlStatement << sections
-	sqlStatement << '");'
-	courses.execute(sqlStatement)
-	primaryKey += 1
-	printf("\r%0.3f%%", primaryKey.to_f/total.to_f * 100)
-
 end
