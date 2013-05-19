@@ -1,5 +1,7 @@
 import sqlite3
 import json
+import re
+
 
 def connect_db():
     return sqlite3.connect('db/courses.db')
@@ -77,6 +79,24 @@ def search_for_course_by_title(conn, term):
     return c.execute("""
       select _uid from courses
       where (upper(title) like upper("""+json.dumps("%"+term+"%")+""") or upper(department) like upper("""+json.dumps('%'+term+'%')+"""))""")
+
+# def search_for_course_by_code(conn, code):
+#     m = re.search(r'[0-9]', code)
+
+#     if m:
+#         idx = m.start()
+#         dept = code[:idx]
+#         num = code[idx:]
+#     else:
+#         dept = code
+#         num = ''
+
+#     print 'by code', dept, num
+
+#     c = conn.cursor()
+#     return c.execute("""
+#       select _uid from courses
+#       where (number like %""" + num + "% or upper(department) like upper("""+dept+"""))""")
 
 def search_for_course_by_professor(conn, professor):
     c = conn.cursor()

@@ -58,6 +58,17 @@ def search_prof():
         return simplejson.dumps(ret)
     return simplejson.dumps([])
 
+# @app.route("/search_by_code")
+# def search_code():
+#     code = request.args.get('code', '')
+#     if len(code):
+#         ret = []
+#         cursor = search_for_course_by_code(g.db, code)
+#         for item in cursor:
+#             ret.append(item[0])
+#         return simplejson.dumps(ret)
+#     return simplejson.dumps([])
+
 @app.route('/course/<courseid>')
 def course_info(courseid):
     all_info = get_all_information(g.db, courseid)

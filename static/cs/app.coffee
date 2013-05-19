@@ -155,12 +155,14 @@ createCourseEl = (course) ->
     $el.find(".star-character").on 'click', ->
       if courseid in window.starredCourses
         unstarCourse courseid, =>
-          updateCourseEl courseid
-          updateStarredCountIndicator currentCourseIds
+          #updateCourseEl courseid
+          #updateStarredCountIndicator currentCourseIds
+          refresh()
       else
         starCourse courseid, =>
-          updateCourseEl courseid
-          updateStarredCountIndicator currentCourseIds
+          refresh()
+          # updateCourseEl courseid
+          # updateStarredCountIndicator currentCourseIds
 
   $el
 
@@ -239,6 +241,15 @@ naturalLanguageJoin = (names) ->
 
 toOrdinal = ['first', 'second', 'third', 'fourth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'sixteenth', 'seventeenth']
 
+RMPtoNaturalLanguage =
+  5: "a once-in-a-lifetime professor"
+  4: "a really good professor"
+  3: "an above-average professor"
+  2: "an average professor"
+  1: "a below-average professor"
+  0: "not a good professor"
+
+
 
 
 sectionInfoTemplate = (index, {_uid, times, instructors}) ->
@@ -246,13 +257,24 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
   console.log "SECTION IN SCHEDULE"
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
   sectionConflicts = isThereConflict window.theSchedule.courseData, times
-  professorOrProfessors = if instructors.length > 1 then "professors" else 'professor'
-  formattedInstructors = naturalLanguageJoin instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
 
-  naturalLanguageText = "The <b>#{toOrdinal[index]}</b> section of this class meets at #{scheduleToString( times )}. It is taught by #{professorOrProfessors} #{formattedInstructors}\. "
+  professorOrProfessors = if instructors.length > 1 then "professors" else 'professor'
+  formattedInstructors = instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
+  formattedInstructorsJoined = naturalLanguageJoin formattedInstructors
+
+
+  naturalLanguageText = "The <b>#{toOrdinal[index]}</b> section of this class meets at #{scheduleToString( times )}. It is taught by #{professorOrProfessors} #{formattedInstructorsJoined}\. "
+
+  for {name, rating}, index in instructors
+    if rating != -1
+      naturalLanguageText += "Your classmates have rated #{formattedInstructors[index]} as <b>#{RMPtoNaturalLanguage[Math.floor(rating)]}</b>. "
 
   if sectionInSchedule
     naturalLanguageText += "<b><span class='color-darkblue'>You have already added this section to your schedule.</span></b>"
+
+  else if sectionConflicts
+    naturalLanguageText += "<b><span class='color-red'>Unfortunately, you cannot add this section to your schedule because you have added another class at the same time.</span></b>"
+
 
   """
   <div class='section' id='section-#{_uid}'>
@@ -302,70 +324,7 @@ formatName = (name = 'STAFF') ->
   [last, first] = name.split ','
   "#{first} #{last}"
 
-decTimeToString = (t) ->
-  hours = Math.floor(t)
-  if hours > 12
-    hours -= 12
-    suffix = 'pm'
-  else
-    suffix = 'am'
-  minutes = Math.round((t - Math.floor(t)) * 60)
-  minutes = minutes.toString()
-  minutes = "0" + minutes if minutes.length < 2
-  "#{hours}:#{minutes}#{suffix}"
 
-decTimesToRangeString = (times) ->
-  stringTimes = times.map(decTimeToString)
-  "#{stringTimes[0]}-#{stringTimes[1]}"
-
-arrayToNaturalList = (array) ->
-  theString = ''
-  if array.length == 1
-    theString = array[0]
-  else
-    for i in [0..array.length-1]
-      theString += array[i]
-      if i < array.length - 3
-        theString += ', '
-      else
-        theString += ' '
-      if i == array.length - 2
-        theString += 'and '
-  theString
-
-scheduleToString = (schedule) ->
-  timeRanges = []
-  phrase = []
-  for day in Schedule.allDays
-    if schedule[day] != undefined
-      if schedule[day].length < 2
-        keepGoing = true
-        range = decTimesToRangeString schedule[day][0]
-        i = 0
-
-        while keepGoing and i < phrase.length
-          if phrase[i]['time'].length < 2 and phrase[i]['time'][0] == range
-            phrase[i]['days'].push(day)
-            keepGoing = false
-          i++
-
-      if keepGoing
-        phrase.push {'time': schedule[day].map(decTimesToRangeString), 'days': [day]}
-
-  stringParts = []
-  console.log 'phrase is', phrase
-  for i in [0..phrase.length-1]
-    thisPart = ''
-    if phrase[i]['time'].length < 2
-      thisPart += phrase[i]['time'][0]
-    else
-      thisPart += phrase[i]['time'].join ' and '
-    thisPart += ' on '
-    console.log 'all the days are ' + phrase[i]['days']
-    thisPart += arrayToNaturalList phrase[i]['days']
-    stringParts.push thisPart
-
-  arrayToNaturalList stringParts
 
 notify = (msg, error = false, duration) ->
   if error
@@ -431,7 +390,7 @@ updateCourseResults = (results) ->
 autocomplete = (term, cb) ->
   $.getJSON '/search_by_professor', prof: term, (results1) ->
     $.getJSON '/search_by_title', name: term, (results) ->
-      cb results1.concat(results)
+      cb results.concat(results1)
 
 updateSearchField = (v) ->
   if v.length
