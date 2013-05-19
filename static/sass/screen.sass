@@ -1,7 +1,7 @@
 @import compass/reset
 
 $subj-list-width: 350px
-$course-list-width: 500px
+$course-list-width: 350px
 
 * 
   box-sizing: border-box
@@ -49,6 +49,8 @@ a:hover
     bottom: 0
     border-right: 1px solid black
     overflow-y: scroll
+    overflow:none
+
     cursor: pointer
 
     li
@@ -77,6 +79,9 @@ a:hover
     border-right: 1px solid black
     overflow-y: scroll
 
+    li:nth-child(odd)
+      background-color: #E8E8E8
+      
     .course-result
       padding: 5px
       border-bottom: 1px solid #444
@@ -107,18 +112,18 @@ a:hover
     #course-search
       position: absolute
       top: 0
-      left: 350px
+      left: $subj-list-width
       margin: 0
       height: 36px
       line-height: 36px
-      //width: $course-list-width
+      width: $course-list-width
       box-shadow: none
       border-bottom: 1px solid black
 
     #notification
       position: absolute
       top: 0
-      left: 900px
+      left: $subj-list-width + $course-list-width + 350
       right: 0
       height: 100%
       margin-top: 10px
@@ -129,7 +134,7 @@ a:hover
     #schedule
       position: absolute
       top: 0
-      left: 800px
+      left: $course-list-width + $subj-list-width
       right: 0
       height: 100%
 
@@ -179,6 +184,12 @@ a:hover
 
 .course-result-professor
   font-size: 13px
+
+.course-result-name
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 270px
 
 .starred-course-result
   background: #FFFDE8
