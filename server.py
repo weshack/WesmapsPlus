@@ -2,7 +2,7 @@ import simplejson
 import scheduling
 
 from flask import Flask, render_template, request, jsonify, g, session
-from db import search_for_course_by_title, connect_db, get_courses_from_cursor, get_all_information, get_times_for_section
+from db import search_for_course_by_title, connect_db, get_courses_from_cursor, get_all_information, get_times_for_section, get_course_summary, get_courseids_for_all_sections
 from pymongo import MongoClient
 from user import create_user, get_user_info, update_user_schedule, update_user_starred
 from scheduling import noConflict, convertTimeStringToDictionary
@@ -13,10 +13,18 @@ app = Flask(__name__)
 def before_request():
     g.db = connect_db()
 
+def get_all_courses(conn):
+    ret = {}
+    for courseid in range(2661):
+        #ret.append(get_all_information(conn, courseid))
+        summary = get_course_summary(conn, courseid)
+        ret[summary['id']] = summary
+    return ret
+        
 @app.route("/")
 def index():
     userinfo = get_user_info(session)
-    return render_template("index.html", sections = userinfo['sections'], starred = userinfo['starred'])
+    return render_template("index.html", sections = userinfo['sections'], starred = userinfo['starred'], courses = get_all_courses(g.db), allSections = get_courseids_for_all_sections(g.db)) 
 
 @app.route("/search_by_title")
 def search():
@@ -89,9 +97,20 @@ def get_sections_for_user(session):
 
 @app.route('/debug/sections')
 def get_sections():
-    userinfo = get_user_info(session)
-    sections = userinfo['sections']
+    sections = get_user_info(session)['sections']
     return simplejson.dumps(sections)
+
+@app.route('/debug/reset_sections')
+def get_sections():
+    update_user_schedule(session['userid'], [])
+    sections = get_user_info(session)['sections']
+    return simplejson.dumps(sections)
+
+@app.route('/debug/reset_stars')
+def get_sections():
+    update_user_starred(session['userid'], [])
+    starred = get_user_info(session)['starred']
+    return simplejson.dumps(starred)    
 
 @app.route('/schedule/<section>', methods = ['POST', 'DELETE'])
 def handle_section(section):
