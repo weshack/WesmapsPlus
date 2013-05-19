@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 def connect_db():
     return sqlite3.connect('db/courses.db')
@@ -75,12 +76,12 @@ def search_for_course_by_title(conn, term):
     c = conn.cursor()
     return c.execute("""
       select _uid from courses
-      where (upper(title) like upper('%"""+term+"""%') or upper(department) like upper('%"""+term+"""%'))""")
+      where (upper(title) like upper("""+json.dumps("%"+term+"%")+""") or upper(department) like upper("""+json.dumps('%'+term+'%')+"""))""")
 
 def search_for_course_by_professor(conn, professor):
     c = conn.cursor()
     prof_ids = []
-    for prof_id in c.execute("select _uid from professors where upper(name) like upper('%"+str(professor)+"%')"):
+    for prof_id in c.execute("select _uid from professors where upper(name) like upper("+json.dumps('%'+str(professor)+'%')+")"):
         prof_ids.append(prof_id[0])
     if len(prof_ids):
         msg = "select course_uid from sections where "
