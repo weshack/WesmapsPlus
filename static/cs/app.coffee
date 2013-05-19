@@ -199,12 +199,11 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
   console.log 'courseinfotempl'
   isStarred = _uid in window.starredCourses
   starredClass = if isStarred then "starred-course-result" else ""
-  
+
   ret = """
     <div class='course-info'>
       <div class='star-container #{starredClass}'>
         <span class='star-character'>&#9734;</span>
-        <span class='star-count'>#{allCourses[_uid].stars}</span>
       </div>
       <header>
         <h1>#{code}</h1>
@@ -213,6 +212,7 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
       <p class='course-info-description'>#{description}</p>
     </div>
   """
+#        <span class='star-count'>#{allCourses[_uid].stars}</span>
 
   ret
 
@@ -315,7 +315,6 @@ courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
   <li class='course-result dept-#{departmentCode} #{starredClass}' id='course-result-#{id}'>
     <div class='star-container'>
       <span class='star-character'>&#9734;</span>
-      <span class='star-count'>#{stars}</span>
     </div>
     <div class='course-result-main'>
       <p class='course-result-code'>#{code}</p>
@@ -332,6 +331,7 @@ courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
 
   # </li>
   # """
+#      <span class='star-count'>#{stars}</span>
     #<p class='course-result-professor'>#{formatName professor}</p>
 
 formatName = (name = 'STAFF') ->
