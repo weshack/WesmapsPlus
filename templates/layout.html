@@ -6,10 +6,10 @@
 		<script src="/static/js/jquery-1.9.1.min.js"></script>
 		<script src="/static/js/underscore-min.js"></script>
 		<script src="/static/js/backbone-min.js"></script>
-                <script>
-                        var scheduledSections = {{ sections|tojson|safe }};
-                        var starredCourses = {{ starred|tojson|safe }};
-                </script>
+    <script>
+      var scheduledSections = {{ sections|tojson|safe }};
+      var starredCourses = {{ starred|tojson|safe }};
+    </script>
 		<script src="/static/js/schedule.js"></script>
 		<script src="/static/js/app.js"></script>
 	  <link href="static/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -28,16 +28,20 @@
 						<h1 id="title">WesMaps+</h1>
 						<input id="course-search" type="text" placeholder="Search for a course or course number"></input>
 						<div id="schedule"></div>
-						<div id="filter-sidebar"></div>
-						<div id="course-results"></div>
 					</div>
 				</nav>
 			{% endblock %}
-				<div id="content">
-					{% block content %}
-					{% endblock %}
-				</div>
-				<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
+			<div id="subject-list">
+				<ul></ul>
+			</div>
+			<div id="course-list">
+				<ul></ul>
+			</div>
+			<div id="content">
+				{% block content %}
+				{% endblock %}
+			</div>
+			<footer>Built by Anastasis Germanidis, Tobias Butler, Max Dietz, and Justin Raymond.</footer>
 			{% block footer %}
 			{% endblock %}
 		</div>

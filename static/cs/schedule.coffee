@@ -18,15 +18,21 @@ class Schedule
 
 	constructor: (courseData, $wrapper) ->
 		@courseData = courseData
+		$rel = $('<div class="schedulerel"></div>')
 		@$wrapper = $wrapper
 		@days = {}
 		@colors = {}
 
+		@$wrapper.append($rel)
+
+		@$wrapper = $rel
+
 
 		for d in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-			$newDay = $('<div class="day day-' + d + '"><div class="relative"></div></div>')
+			$newDay = $("<div class=day day-#{d}'><div class='relative'></div></div>")
 			@$wrapper.append($newDay)
-			$newDay.append('<div class="dayName">' + d.substring(0,3) + '</div>')
+			dayAbbrev = d.substring(0,3)
+			$newDay.append("<div class='dayName'>#{dayAbbrev}</div>")
 			@days[d] = $newDay.children('.relative')
 
 		this.draw()
@@ -57,7 +63,7 @@ class Schedule
 					top = (t[0] - earliest)*100 / (latest - earliest)
 					height = (t[1] - t[0])*100 / (latest - earliest)
 
-					$thisMtg = $('<div class="mtg mtg-' + course + '"></div>')
+					$thisMtg = $("<div class='mtg mtg-#{course}'></div>")
 
 					$thisMtg
 						.css('top', top + '%')
