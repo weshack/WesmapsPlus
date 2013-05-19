@@ -15,7 +15,8 @@ def before_request():
 
 def get_all_courses(conn):
     ret = {}
-    for courseid in range(2661):
+    c = conn.cursor()
+    for courseid in range(int(c.execute("select COUNT(*) from courses").next()[0])):
         #ret.append(get_all_information(conn, courseid))
         summary = get_course_summary(conn, courseid)
         ret[summary['id']] = summary
