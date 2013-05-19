@@ -4,6 +4,5 @@ static/stylesheets
 static/.sass-cache/*
 .DS_Store
  *.sassc
-/static/js/*.js
-/static/js/courses.js
-/static/js
+#*#
+*.orig
