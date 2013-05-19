@@ -1,71 +1,121 @@
-# We are assuming that the server will return
-# data like below:
-#{
-#	"_uid": 0,
-#	"genEdArea": "HA ART",
-#	"prerequisites": "None",
-#	"title": "European Architecture to 1750",
-#	"url": "https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?crse=008011&term=1099",
-#	"credit": 1,
-#	"number": "151",
-#	"courseid": "008011",
-#	"semester": "Fall 2009",
-#	"department": "ARHA",
-#	"gradingMode": "Graded",
-#	"sections":
-#	[
-#		{
-#			"FR": "18",
-#			"permissionRequired": false,
-#			"name": "01",
-#			"JR_Major": "6",
-#			"additional_requirements": "None",
-#			"SR_Major": "6",
-#			"times": ".M.W... 02:40PM-04:00PM; \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0",
-#			"seatsAvailable": 15,
-#			"JR_NonMajor": "6",
-#			"location": "CFAHALL; ",
-#			"major_readings": " ;;;Marvin Trachtenberg and Isabel Hyman, ARCHITECTURE, FROM PREHISTORY TO POSTMODERNISM;Robin R. Rhodes, ARCHITECTURE AND MEANING ON THE ATHENIAN ACROPOLIS;William MacDonald, THE PANTHEON.;Roger Stalley, EARLY MEDIEVAL ARCHITECTURE;Otto von Simson, THE GOTHIC CATHEDRAL;Peter Murray, ARCHITECTURE OF THE ITALIAN RENAISSANCE.;Robert W. Berger, A ROYAL PASSION: LOUIS XIV AS PATRON OF ARCHITECTURE",
-#			"SO": "18",
-#			"GRAD_Major": "X",
-#			"SR_NonMajor": "6",
-#			"enrollmentLimit": 60,
-#			"assignments_and_examinations": "Three short papers, two in-class exams and a final exam."
-#		}
-#	]
-#}
-#
-# And we will take this data and build the webpage client-side using
-# this Coffeescript.
-#
-#
 
-#$("head").html('''
-#		<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
-#		<link href='styles.css' rel='stylesheet' type='text/css'> ''')
+class SectionSchedule
+
+	this.earliest = 75
+	this.latest = 90
+
+	this.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a']
+
+	constructor: (courseData, $wrapper) ->
+		@courseData = courseData
+		@$wrapper = $wrapper
+		@days = {}
+		@colors = {}
 
 
-data = JSON.parse($.getJSON('courses/'))
-currSchedule = JSON.parse($.getJSON("/schedule"))
-method = "POST"
-class = "add"
-if data['_uid'] in currSchedule
-	method = "DELETE"
-<<<<<<< HEAD
-	buttonMsg = "Remove"
+		for d in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+			$newDay = $('<div class="day day-' + d + '"><div class="relative"></div></div>')
+			@$wrapper.append($newDay)
+			$newDay.append('<div class="dayName">' + d.substring(0,3) + '</div>')
+			@days[d] = $newDay.children('.relative')
 
-=======
-	class = "remove"
+		this.draw()
+
+	highlightCourse: (course) ->
+		$('.mtg').addClass('fade');
+		$('.mtg-' + course).removeClass('fade');
+
+	lowlightCourses: ->
+		$('.mtg').removeClass('fade')
+
+	draw: ->
+		for day, $el of @days
+			$el.html('')
+
+		for course, days of @courseData
+
+			if course in @colors
+				thisColor = colors[course]
+			else
+				thisColor = Schedule.possColors.pop()
+
+
+			for day, times of days
+				for t in times
+					earliest = Schedule.earliest
+					latest = Schedule.latest
+					top = (t[0] - earliest)*100 / (latest - earliest)
+					height = (t[1] - t[0])*100 / (latest - earliest)
+
+					$thisMtg = $('<div class="mtg mtg-' + course + '"></div>')
+
+					$thisMtg
+						.css('top', top + '%')
+						.css('height', height + '%')
+						.css('background-color', '#' + thisColor)
+						.data('course', course)
+
+
+					thisSchedule = this
+					$thisMtg.hover(() ->
+						thisSchedule.highlightCourse($(this).data('course'))
+					,() ->
+						thisSchedule.lowlightCourses()
+					)
+
+					@days[day].append($thisMtg)
+
+
+@handleSection = (section) ->
+	data = JSON.parse($.getJSON("/courses"))
+	currSchedule = JSON.parse($.getJSON("/schedule"))
+	if data['_uid'] in currSchedule
+		removeSection(section)
+		$('#course-updater').addClass('add')
+		$('#course-updater').removeClass('remove')
+	else
+		addSection(section)
+		$('#course-updater').addClass('remove')
+		$('#course-updater').removeClass('add')
 	
->>>>>>> Now with pretty buttons!
+addSection = (section) ->
+	$.ajax
+		type: 'POST'
+		url: "/schedule/#{section}"
+		data: {section}
+		success: (newSections) ->
+			console.log newSections
+		error: ->
+			conflictDetected()
 
-$("body").html('''
+removeSection = (section) ->
+	$.ajax
+		type: 'DELETE'
+		url: "/schedule/#{section}"
+		data: {section}
+		success: (newSections) ->
+			console.log newSections
+		error: ->
+			conflictDetected()
+
+load = (course_id) ->
+	currSchedule = JSON.parse($.getJSON("/schedule"))
+	data = JSON.parse($.getJSON("/course/#{course_id}"))
+	inSection = false
+	for section in data['sections']
+		if section['_uid'] in currSchedule.keys
+			inSection = true
+			break
+	if inSection
+		$('#course-updater').addClass('add')
+	else
+		$('#course-updater').addClass('remove')
+	window.theSchedule = new SectionSchedule($.getJSON("/course/#{course_id}/schedule"), $('#sections-schedule'))
+	
+	$("body").html('''
 <h1><div class=course-code>#{data['department']}#{data['number']}</div><span class=course-name>#{data['title']}</span></h1>
 <div class=container>
-	<form name="input" action="/courses" method="#{method}" id="form1" >
-		<input type="hidden" name="section" value="5">
-	</form>
-	<button form="form1" type="submit" class="#{class}"></button>
+	<button id='course-updater' onClick="addSection"></button>
 	<div class=header>Credit</div>
 	<div class=data>#{data['credit']}</div>
 	<div class=header>GenEd</div>
@@ -75,12 +125,4 @@ $("body").html('''
 	<div class=header>Prerequisites</div>
 	<div class=data>#{data['prerequisites']}</div>
 </div>
-<<<<<<< HEAD
-<p>data['description']</p>
-<form name="input" action="/courses" method="#{method}">
-<input type="submit" value="#{buttonMsg}">
-<input type="hidden" name="sections" value="#{data['_uid']}">
-</form>''')
-=======
 <p>data['description']</p>''')
->>>>>>> Now with pretty buttons!

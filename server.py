@@ -38,6 +38,15 @@ def get_starred():
     starred = get_user_info(session)['starred']
     return simplejson.dumps(starred)
 
+@app.route('/course/<courseid>/schedule')
+def course_schedule(courseid):
+	sections = get_sections_for_course(g.db, courseid)
+	times = {}
+	for section in sections:
+		times['section'] = convertTimeStringToDictionary(get_times_for_section(g.db, section))
+	return simplejson.dumps(times)
+
+	
 @app.route('/star/<courseid>', methods = ['POST', 'DELETE'])
 def update_starred(courseid = ''):
     starred = set( get_user_info(session)['starred'] )
