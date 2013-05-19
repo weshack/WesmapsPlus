@@ -3,7 +3,7 @@ require 'sqlite3'
 
 json_data = JSON.parse(IO.read("courses.json"))
 courses = SQLite3::Database.new("courses.db")
-#courses.execute "DROP TABLE courses"
+courses.execute "DROP TABLE courses"
 courses.execute <<-SQL
 CREATE TABLE courses (
 _uid INTEGER PRIMARY KEY,
@@ -22,7 +22,7 @@ sections TEXT
 );
 SQL
 
-#courses.execute "DROP TABLE sections"
+courses.execute "DROP TABLE sections"
 courses.execute <<-SQL
 CREATE TABLE sections (
 _uid INTEGER PRIMARY KEY,
@@ -46,7 +46,7 @@ enrollmentLimit INTEGER,
 assignments_and_examinations TEXT
 );
 SQL
-#courses.execute "DROP TABLE professors"
+courses.execute "DROP TABLE professors"
 courses.execute <<-SQL
 CREATE TABLE professors (
 _uid INTEGER PRIMARY KEY,
@@ -66,8 +66,10 @@ end
 primaryKey = 0
 sPk = 0
 total = json_data.size
+coursesAdded = []
 json_data.each do | course |
-	if course['semester'] == "Fall 2013"
+	if course['semester'] == "Fall 2013" and not coursesAdded.index(course['title'])
+		coursesAdded << course['title']
 		courseuid = primaryKey
 		sections = ""
 		course['sections'].each do | section |
@@ -181,3 +183,4 @@ json_data.each do | course |
 		printf("\r%0.3f%%", primaryKey.to_f/total.to_f * 100)
 	end
 end
+puts "... #{primaryKey} total added"
