@@ -25,7 +25,7 @@ courses.execute "DROP TABLE sections"
 courses.execute <<-SQL
 CREATE TABLE sections (
 _uid INTEGER PRIMARY KEY,
-courseid INTEGER,
+course_uid INTEGER,
 permissionRequired TEXT,
 name INTEGER,
 FR TEXT,
@@ -66,12 +66,12 @@ primaryKey = 0
 sPk = 0
 total = json_data.size
 json_data.each do | course |
-	courseid = course['courseid']
+	courseuid = primaryKey
 	course['sections'].each do | section |
 		sqlStatement = 'INSERT INTO sections VALUES ( '
 		sqlStatement << sPk.to_s
 		sqlStatement << ', '
-		sqlStatement << courseid
+		sqlStatement << courseuid.to_s
 		sqlStatement << ', "'
 		sqlStatement << section['permissionRequired'].to_s
 		sqlStatement << '", "'
