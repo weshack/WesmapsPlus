@@ -197,10 +197,12 @@ createCourseInfoEl = (courseInfo) ->
 courseInfoTemplate = ({department, number, sections, title, description, _uid}) ->
   code = "#{department}#{number}"
   console.log 'courseinfotempl'
-
+  isStarred = _uid in window.starredCourses
+  starredClass = if isStarred then "starred-course-result" else ""
+  
   ret = """
     <div class='course-info'>
-      <div class='star-container'>
+      <div class='star-container #{starredClass}'>
         <span class='star-character'>&#9734;</span>
         <span class='star-count'>#{allCourses[_uid].stars}</span>
       </div>
