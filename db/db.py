@@ -23,25 +23,28 @@ def build_full_course_obj(row):
              'department': row[9],
              'gradingMode': row[10],
              'description': row[11],
-             'section_uid': row[12],
-             #'course_uid': row[13], # already in dictionary from top
-             'permissionRequired': row[14],
-             'name': row[15],
-             'FR': row[16],
-             'SO': row[17],
-             'JR_NonMajor': row[18],
-             'JR_major': row[19],
-             'SR_NonMajor': row[20],
-             'SR_major': row[21],
-             'GRAD_major': row[22],
-             'additional_requirements': row[23],
-             'times': row[24],
-             'seatsAvailable': row[25],
-             'instructors': row[26],
-             'location': row[27],
-             'major_readings': row[28],
-             'enrollmentLimit': row[29],
-             'assignments_and_examinations': row[30] }
+			 'sections': [] }
+	
+def build_full_section_obj(row):
+	return { '_uid': row[0],
+	'course_uid': row[1],
+	'permissionRequired': row[2],
+	'name': row[3],
+	'FR': row[4],
+	'SO': row[5],
+	'JR_NonMajor': row[6],
+	'JR_major': row[7],
+	'SR_NonMajor': row[8],
+	'SR_major': row[9],
+	'GRAD_major': row[10],
+	'additional_requirements': row[11],
+	'times': row[12],
+	'seatsAvailable': row[13],
+	'professor': row[14],
+	'location': row[15],
+	'major_readings': row[16],
+	'enrollmentLimit': row[17],
+	'assignments_and_examinations': row[18] }
 	
 def get_courses_from_cursor(res):
     ret = []
@@ -74,19 +77,28 @@ def get_times_for_section(conn, sectionid):
 
 def get_sections_for_course(conn, courseid):
     c = conn.cursor()
-    return c.execute("select * from sections where courseid = " + str(courseid))
+    return c.execute("select * from sections where course_uid = " + str(courseid))
 
 def get_sections_and_times_for_course(conn, courseid):
     c = conn.cursor()
-    return c.execute("select times from sections where courseid = " + str(courseid)).next()[0]
+    return c.execute("select times from sections where course_uid = " + str(courseid)).next()[0]
 
 def get_all_information(conn, courseid):
     c = conn.cursor()
-    return build_full_course_obj(c.execute("select * from courses JOIN sections ON courses._uid = sections.course_uid WHERE courses._uid = " + str(courseid)).next())
+    courseDict = build_full_course_obj(c.execute("select * from courses where _uid = " + str(courseid)).next())
+	sectionCursor = get_sections_for_course(conn, courseid)
+	while True
+		try:
+			courseDict['sections'].append(build_full_section_obj(sectionCursor.next()))
+		except:
+			break
+	return courseDict
+	
+	
 
 def get_instructors_for_course(conn, courseid):
     c = conn.cursor()
-    prof_string = c.execute("select professor from sections where courseid = " + str(courseid)).next()
+    prof_string = c.execute("select professor from sections where course_uid = " + str(courseid)).next()
     
     instructors = []
 
