@@ -258,10 +258,7 @@ RMPtoNaturalLanguage =
   1: "a below-average professor"
   0: "not a good professor"
 
-
-
-
-sectionInfoTemplate = (index, {_uid, times, instructors}) ->
+sectionInfoTemplate = (sectionIndex, {_uid, times, instructors}) ->
   sectionInSchedule = _uid.toString() in window.scheduledSections
   console.log "SECTION IN SCHEDULE"
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
@@ -279,7 +276,7 @@ sectionInfoTemplate = (index, {_uid, times, instructors}) ->
   profText = if instructors.length then '<li>Taught by ' + naturalLanguageJoin profArray + '</li>' else ''
 
   naturalLanguageText = """
-    <h4>Section #{index}</h4>
+    <h4>Section #{sectionIndex + 1}</h4>
     <ul class='courseInfo'>
       #{profText}
       <li>meets #{scheduleToString( times )}</li>
@@ -338,8 +335,6 @@ formatName = (name = 'STAFF') ->
   return name if name == 'STAFF'
   [last, first] = name.split ','
   "#{first} #{last}"
-
-
 
 notify = (msg, error = false, duration) ->
   if error
