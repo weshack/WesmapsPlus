@@ -76,7 +76,7 @@ getCourseResultEl = (id) ->
   $("#course-result-#{id}")
 
 refreshList = (courseIds, mode, courseid, force = false) ->
-  if (courseid and currentCourseId != courseid) or force
+  if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
 
@@ -107,14 +107,13 @@ refreshList = (courseIds, mode, courseid, force = false) ->
         relevant = filterForSubject currentCourseIds, mode
         showCourses relevant
 
-  if (courseid and currentCourseId != courseid) or force
+  if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
 
   currentCourseIds = courseIds
   currentMode = mode
   currentCourseId = courseid
-
 
 buildCourseResults = (courseIds) ->
   resultsByDepartment = {}
@@ -133,10 +132,13 @@ getFullCourseInfo = (id, cb) ->
   $.getJSON "/course/#{id}", (result) ->
     cb result
 
+renderCourseInfo = (courseInfo) ->
+  console.log courseInfo
+
 selectCourse = (courseid, switchToMode) ->
   refreshList currentCourseIds, switchToMode or currentMode, courseid
   getFullCourseInfo courseid, (course) ->
-    console.log 'full course', course
+    renderCourseInfo course
 
 createCourseEl = (course) ->
   $el = $ courseTemplate course
@@ -162,10 +164,29 @@ updateCourseEl = (id) ->
     allCourses[id].stars = course.stars
     $("#course-result-#{id}").replaceWith createCourseEl(course)
 
-courseInfoTemplate = ->
-  """
+courseInfoTemplate = ({department, number, sections}) ->
+  code = "#{department}#{number}"
+
+
+  ret = """
+
 
   """
+
+  for section in sections
+    ret += sectionInfoTemplate section
+
+  ret
+
+sectionInfoTemplate = ({times}) ->
+  """
+
+
+
+  """
+
+days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 
 
 courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->

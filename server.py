@@ -23,10 +23,14 @@ def get_all_courses(conn):
         ret[summary['id']] = summary
     return ret
 
+# @app.route('/all')
+# def get_all():
+#     return simplejson.dumps(get_all_courses(g.db))
+
 @app.route("/")
 def index():
     userinfo = get_user_info(session)
-    return render_template("index.html", sections = userinfo['sections'], starred = map(int, userinfo['starred']), courses = get_all_courses(g.db), allSections = get_courseids_for_all_sections(g.db))
+    return render_template("index.html", sections = userinfo['sections'], starred = map(int, userinfo['starred']), allSections = get_courseids_for_all_sections(g.db))
 
 @app.route("/search_by_title")
 def search():

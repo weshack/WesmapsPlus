@@ -42,6 +42,8 @@ a:hover
     ul 
       list-style-type: none
 
+    user-select: none
+
   #subject-list
     position: absolute
     width: $subj-list-width
@@ -95,8 +97,8 @@ a:hover
     overflow-y: scroll
     cursor: pointer
 
-    li:nth-child(odd)
-      background-color: #E8E8E8
+    /* li:nth-child(odd)
+    /*   background-color: #E8E8E8
 
     .course-result
       border-bottom: 1px solid #444
@@ -118,7 +120,7 @@ a:hover
     position: absolute
     left: $subj_list_width + $course_list_width + 10
     text-align: left
-    top: 36px
+    top: $header-height
     right: 0
     height: 100%
 
