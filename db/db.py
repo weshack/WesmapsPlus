@@ -85,7 +85,7 @@ def search_for_course_by_code(conn, code):
     ret = []
     for row in c.execute("select _uid,department,number from courses"):
         courseCode = str(row[1])+str(row[2])
-        if code in courseCode:
+        if code.upper() in courseCode:
             print 'potCode', courseCode
             ret.append(row[0])
     return ret
