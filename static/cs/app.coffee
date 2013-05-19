@@ -199,4 +199,21 @@ $ ->
 
   refreshList _.values(allCourses), 'all'
 
+  $("#course-list li").on 'mousedown', () ->
+    title = ($(this).text().split("\n")[2]).replace /^\s+|\s+$/g, ""
+    uid = -1
+    for course in _.values(allCourses)
+      if title == course['title'].replace /^\s+|\s+$/g, ""
+        uid = course['id']
+        break
+    $.getJSON "/course/#{uid}", (data) ->
+      $("#course-code").html "#{data['department']}#{data['number']}"
+      $("#course-name").html data['title']
+      $("#credit-data").html  data['credit']
+      $("#gened-data").html  data['genEdArea']
+      $("#graded-data").html  data['gradingMode']
+      $("#prereq-data").html data['prerequisites']
+      $("#description").html data['description']
 
+
+      
