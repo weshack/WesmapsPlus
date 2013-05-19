@@ -2,7 +2,7 @@ class Schedule
 
   this.earliest = 8
   this.latest = 22
-
+  this.allDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   this.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a']
 
   constructor: (courseData, $wrapper) ->
@@ -16,7 +16,7 @@ class Schedule
 
     @$wrapper = $rel
 
-    for d in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    for d in Schedule.allDays
       $newDay = $("<div class=day day-#{d}'><div class='relative'></div></div>")
       @$wrapper.append($newDay)
       dayAbbrev = d.substring(0,3)
@@ -30,7 +30,8 @@ class Schedule
     $('.mtg').addClass('fade')
     $('.mtg-' + course).removeClass('fade')
     #@popup = @displayPopup title, x, y
-    notify title
+    schedStr = scheduleToString @courseData[course]
+    notify "#{title} - #{schedStr}"
 
   lowlightCourses: =>
     $('.mtg').removeClass('fade')
@@ -63,7 +64,6 @@ class Schedule
             .css('height', height + '%')
             .css('background-color', '#' + thisColor)
             .data('course', course)
-
 
           thisSchedule = this
           $thisMtg.hover( (evt) ->
