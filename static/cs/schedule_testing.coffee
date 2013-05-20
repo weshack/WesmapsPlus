@@ -37,6 +37,15 @@ removeSection = (section) ->
       window.scheduledSections = newSections
       getAndUpdateSchedule()
 
+removeAllSections = (cb) ->
+  $.ajax
+    type: 'DELETE'
+    url: "/schedules"
+    dataType: 'json'
+    success: (newSections) ->
+      window.scheduledSections = newSections
+      cb?()
+
 getSchedule = ->
   $.getJSON '/schedule', (schedule) ->
     console.log JSON.stringify schedule
