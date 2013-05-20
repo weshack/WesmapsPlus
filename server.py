@@ -160,7 +160,7 @@ def reset_stars():
     update_user_starred(session['userid'], [])
     starred = get_user_info(session)['starred']
     return simplejson.dumps(starred)    
-
+ 
 @app.route('/schedule/<section>', methods = ['POST', 'DELETE'])
 def handle_section(section):
     userinfo = get_user_info(session)

@@ -60,7 +60,6 @@ fixCategoriesBasedOn = (courses) ->
   scheduled = filterForScheduled courses
   getListItemForMode('scheduled').append "<span class='count-indicator'>#{scheduled.length}</span>"
 
-  console.log 'buildCourseResults', courses
   resultsByDept = buildCourseResults courses
 
   for code, results of resultsByDept
@@ -87,11 +86,9 @@ refreshList = (courseIds, mode, courseid, force = false) ->
     getCourseResultEl(courseid).addClass 'selected-course-result'
 
   if (courseIds != currentCourseIds or mode != currentMode) or force
-    console.log 'refreshing list'
     fixCategoriesBasedOn courseIds
 
     if (!relevantSubjects[mode]) and !(mode in ['all', 'starred', 'scheduled'])
-      console.log 'FIX'
       return refreshList courseIds, 'all', courseid
 
     $(".category").removeClass 'selected-category'
@@ -149,7 +146,6 @@ getFullCourseInfo = (id, cb) ->
     cb result
 
 renderCourseInfo = (courseInfo) ->
-  console.log courseInfo
   $el = createCourseInfoEl courseInfo
   $("#content").html $el
 
@@ -215,7 +211,7 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
   console.log 'courseinfotempl'
   isStarred = _uid in window.starredCourses
   scheduled = false
-  for section in sections 
+  for section in sections
     if isSectionInSchedule section
       scheduled = true
   scheduledClass = if scheduled then ' scheduled '  else ''
@@ -280,7 +276,7 @@ toOrdinal = ['first', 'second', 'third', 'fourth', 'sixth', 'seventh', 'eighth',
 
 RMPtoNaturalLanguage =
   5: "a once-in-a-lifetime professor"
-  4: "a really good professor"
+  4: "an excellent professor"
   3: "an above-average professor"
   2: "an average professor"
   1: "a below-average professor"
@@ -449,6 +445,14 @@ updateSearchField = (v) ->
   else
     refreshList allCourseIds, currentMode
 
+makeSampleSchedule = ->
+  removeAllSections ->
+    ["68",  "484", "577", "535"].forEach (section) ->
+      addSection section
+
+    setTimeout ( ->
+      selectCourse 378, 'scheduled'), 1000
+
 $ ->
   $("#course-search").on 'keyup', ->
     updateSearchField @value
@@ -464,6 +468,6 @@ $ ->
 
   refreshList allCourseIds, 'all', null
 
-
-
+  $("#load-sample-schedule").click ->
+    makeSampleSchedule()
 
