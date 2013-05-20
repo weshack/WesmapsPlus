@@ -75,12 +75,11 @@ refresh = ->
 getCourseResultEl = (id) ->
   $("#course-result-#{id}")
 
-# courseIsVisible = (courseid) ->
-#   $el = getCourseResultEl(courseid)
-#   if $el.length
-#     return $("#course-list").scrollTop() <= $el.get(0).offsetTop <= $("#course-list").scrollTop() + $("#course-list").height()
-#   false
-
+courseIsVisible = (courseid) ->
+  $el = getCourseResultEl(courseid)
+  if $el.length
+    return $("#course-list").scrollTop() <= $el.get(0).offsetTop <= $("#course-list").scrollTop() + $("#course-list").height()
+  false
 
 refreshList = (courseIds, mode, courseid, force = false) ->
   if (courseid? and currentCourseId != courseid) or force
@@ -117,13 +116,14 @@ refreshList = (courseIds, mode, courseid, force = false) ->
   if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
+
     # unless getCourseResultEl(courseid).length
     #   return refreshList courseIds, 'all', courseid
 
     # else
-    #   unless courseIsVisible courseid
-    #     $("#course-list").animate (
-    #       scrollTop: getCourseResultEl(courseid).offset().top ), 500
+    #    unless courseIsVisible courseid
+    #      $("#course-list").animate (
+    #        scrollTop: getCourseResultEl(courseid).offset().top ), 500
 
     loadCourse courseid
 
@@ -248,7 +248,7 @@ createSectionInfoEl = (index, section) ->
         addSection section._uid
 
   $el.find(".course-transition").click ->
-    selectCourse $(@).data('courseid')
+    selectCourse $(@).data('courseid'), 'scheduled'
 
   $scheduleEl = $el.find '.section-schedule'
 
@@ -381,7 +381,7 @@ notify = (msg, error = false, duration) ->
 additionalCategories =
   all: 'All'
   starred: 'Starred'
-  scheduled: 'In your schedule'
+  scheduled: 'In my schedule'
 
 fillSubjectList = ->
   $subjectList = $('#subject-list ul')
