@@ -214,12 +214,19 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
   code = "#{department}#{number}"
   console.log 'courseinfotempl'
   isStarred = _uid in window.starredCourses
+  scheduled = false
+  for section in sections 
+    if isSectionInSchedule section
+      scheduled = true
+  scheduledClass = if scheduled then ' scheduled '  else ''
   starredClass = if isStarred then "starred-course-result" else ""
 
   ret = """
     <div class='course-info'>
       <div class='star-container #{starredClass}'>
         <span class='star-character'>&#9734;</span>
+      </div>
+      <div class="calendar-icon #{scheduledClass}">
       </div>
       <header>
         <h1>#{code}</h1>
@@ -341,6 +348,8 @@ courseTemplate = ({id, code, title, instructors, departmentCode, stars}) ->
   <li class='course-result dept-#{departmentCode} #{starredClass}' id='course-result-#{id}'>
     <div class='star-container'>
       <span class='star-character'>&#9734;</span>
+    </div>
+    <div class="calendar-icon">
     </div>
     <div class='course-result-main'>
       <p class='course-result-code'>#{code}</p>

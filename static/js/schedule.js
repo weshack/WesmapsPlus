@@ -7,7 +7,7 @@ Schedule = (function() {
 
   Schedule.latest = 22;
 
-  window.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a', 'f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550'];
+  window.possColors = ['8c2318', '88a65e', 'bfb35a', '69D2E7', '21CA6F', '490A3D', 'BD1550', '34408C'];
 
   window.colorIndex = possColors.length - 1;
 
