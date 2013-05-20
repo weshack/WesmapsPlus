@@ -191,7 +191,7 @@ createCourseInfoEl = (courseInfo) ->
   $el.append $inner
   for section, index in courseInfo.sections
     console.log 'section index', index
-    $inner.append createSectionInfoEl index, section
+    $inner.append createSectionInfoEl index, section, courseInfo._uid
 
   $el
 
@@ -217,7 +217,7 @@ courseInfoTemplate = ({department, number, sections, title, description, _uid}) 
 
   ret
 
-createSectionInfoEl = (index, section) ->
+createSectionInfoEl = (index, section, cid) ->
   console.log 'sss'
   $el = $ sectionInfoTemplate index, section
   if isSectionInSchedule section
@@ -225,6 +225,8 @@ createSectionInfoEl = (index, section) ->
     $el.find('.section-update').removeClass("add-section") # to be run before click!
     $el.find('.section-update').on 'click', ->
       removeSection section._uid
+      window.possColors.push window.colors[cid]
+      delete window.colors[cid]
   else
     $el.find('.section-update').addClass("add-section") # won't work since this needs
     $el.find('.section-update').removeClass("remove-section") # to be run before click!
@@ -235,10 +237,10 @@ createSectionInfoEl = (index, section) ->
   $scheduleEl = $el.find '.section-schedule'
 
   if isSectionInSchedule section
-    new SectionSchedule window.theSchedule.courseData, {}, $scheduleEl
+    new SectionSchedule window.theSchedule.courseData, {}, $scheduleEl, cid
 
   else
-    new SectionSchedule window.theSchedule.courseData, section.times, $scheduleEl
+    new SectionSchedule window.theSchedule.courseData, section.times, $scheduleEl, cid
 
   $el
 

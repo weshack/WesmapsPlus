@@ -7,7 +7,9 @@ Schedule = (function() {
 
   Schedule.latest = 22;
 
-  Schedule.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a', 'f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550'];
+  window.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a', 'f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550'];
+
+  window.colorIndex = possColors.length - 1;
 
   Schedule.allDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -20,7 +22,7 @@ Schedule = (function() {
     $rel = $('<div class="schedulerel"></div>');
     this.$wrapper = $wrapper;
     this.days = {};
-    this.colors = {};
+    window.colors = {};
     this.$wrapper.append($rel);
     this.$wrapper = $rel;
     _ref = Schedule.allDays;
@@ -62,11 +64,11 @@ Schedule = (function() {
     for (course in _ref1) {
       days = _ref1[course];
       console.log('checking', course);
-      if (this.colors[course]) {
-        thisColor = this.colors[course];
+      if (window.colors[course]) {
+        thisColor = window.colors[course];
         console.log('using existingi color', thisColor, 'for', course);
       } else {
-        this.colors[course] = thisColor = Schedule.possColors.pop();
+        window.colors[course] = thisColor = window.possColors.pop();
       }
       _results.push((function() {
         var _results1;

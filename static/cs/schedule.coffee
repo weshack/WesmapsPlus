@@ -3,8 +3,8 @@ class Schedule
   this.earliest = 8
   this.latest = 22
 
-  this.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550']
-
+  window.possColors = ['8c2318', '5e8c6a', '88a65e', 'bfb35a','f2c45a', '69D2E7', 'E0E4CC', 'F38630', '490A3D', 'BD1550']
+  window.colorIndex = possColors.length - 1
   this.allDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
   constructor: (courseData, $wrapper) ->
@@ -12,7 +12,7 @@ class Schedule
     $rel = $('<div class="schedulerel"></div>')
     @$wrapper = $wrapper
     @days = {}
-    @colors = {}
+    window.colors = {}
 
     @$wrapper.append($rel)
 
@@ -48,11 +48,11 @@ class Schedule
 
       console.log 'checking', course
 
-      if @colors[course]
-        thisColor = @colors[course]
+      if window.colors[course]
+        thisColor = window.colors[course]
         console.log 'using existingi color', thisColor, 'for', course
       else
-        @colors[course] = thisColor = Schedule.possColors.pop()
+        window.colors[course] = thisColor = window.possColors.pop()
 
       for day, times of days
         for t in times
