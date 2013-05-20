@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rsync -r . root@97.107.136.252:~/WesmapsPlus
+

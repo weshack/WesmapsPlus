@@ -75,6 +75,12 @@ refresh = ->
 getCourseResultEl = (id) ->
   $("#course-result-#{id}")
 
+courseIsVisible = (courseid) ->
+  $el = getCourseResultEl(courseid)
+  if $el.length
+    return $("#course-list").scrollTop() <= $el.get(0).offsetTop <= $("#course-list").scrollTop() + $("#course-list").height()
+  false
+
 refreshList = (courseIds, mode, courseid, force = false) ->
   if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
@@ -110,6 +116,15 @@ refreshList = (courseIds, mode, courseid, force = false) ->
   if (courseid? and currentCourseId != courseid) or force
     $(".course-result").removeClass 'selected-course-result'
     getCourseResultEl(courseid).addClass 'selected-course-result'
+
+    # unless getCourseResultEl(courseid).length
+    #   return refreshList courseIds, 'all', courseid
+
+    # else
+    #    unless courseIsVisible courseid
+    #      $("#course-list").animate (
+    #        scrollTop: getCourseResultEl(courseid).offset().top ), 500
+
     loadCourse courseid
 
   currentCourseIds = courseIds
@@ -234,6 +249,9 @@ createSectionInfoEl = (index, section, cid) ->
       if not isThereConflict window.theSchedule.courseData, section
         addSection section._uid
 
+  $el.find(".course-transition").click ->
+    selectCourse $(@).data('courseid'), 'scheduled'
+
   $scheduleEl = $el.find '.section-schedule'
 
   if isSectionInSchedule section
@@ -261,12 +279,12 @@ RMPtoNaturalLanguage =
   1: "a below-average professor"
   0: "not a good professor"
 
-
-sectionInfoTemplate = (sectionIndex, {_uid, times, instructors}) ->
+sectionInfoTemplate = (sectionIndex, {_uid, times, instructors, seatsAvailable, enrollmentLimit}) ->
   sectionInSchedule = _uid.toString() in window.scheduledSections
   console.log "SECTION IN SCHEDULE"
   sectionInScheduleClass = if sectionInSchedule then 'session-in-schedule' else ''
-  sectionConflicts = not sectionInSchedule and isThereConflict window.theSchedule.courseData, times
+  conflict = isThereConflict window.theSchedule.courseData, times
+  sectionConflicts = not sectionInSchedule and conflict
   sectionConflictClass = if sectionConflicts then 'session-conflicts' else ''
 
   formattedInstructors = instructors.map( (x) -> "<b>#{formatName x.name}</b>" )
@@ -276,23 +294,27 @@ sectionInfoTemplate = (sectionIndex, {_uid, times, instructors}) ->
   profArray = []
   for {name, rating}, profIndex in instructors
     if rating != -1
-      profArray.push("#{formattedInstructors[profIndex]} (#{RMPtoNaturalLanguage[Math.floor(rating)]})")
+      profArray.push("#{formattedInstructors[profIndex]} (#{RMPtoNaturalLanguage[Math.floor(rating)]}, according to classmates)")
+    else
+      profArray.push("#{formattedInstructors[profIndex]}")
 
-  profText = if instructors.length then '<li>Taught by ' + naturalLanguageJoin profArray + '</li>' else ''
+  profText =  'Taught by ' + ( if instructors.length then naturalLanguageJoin(profArray) else 'staff')
+
+  if sectionInSchedule
+    scheduleIndication = "<p class='color-darkblue'>You have already added this section to your schedule.</p>"
+  else if sectionConflicts
+    scheduleIndication = "<p class='color-red'><b>You cannot add this section to your schedule because you have another class, <a data-courseid='#{conflict}' class='course-transition'>#{allCourses[conflict].title}</a>, scheduled at the same time.</p></p>"
 
   naturalLanguageText = """
     <button class='section-update #{sectionConflictClass}'></button>
     <h4>Section #{sectionIndex + 1}</h4>
-    <ul class='courseInfo'>
-      #{profText}
-      <li>meets #{scheduleToString( times )}</li>
-    </ul>
+    <div class='courseInfo'>
+      #{profText}, meets <b>#{scheduleToString( times )}</b>.
+      <p>There are currently <b>#{seatsAvailable}</b> seats available out of a total enrollment limit of <b>#{enrollmentLimit}</b>.</p>
+      #{scheduleIndication or ''}
+    </div>
   """
 
-  if sectionInSchedule
-    naturalLanguageText += "<b><span class='color-darkblue'>You have already added this section to your schedule.</span></b>"
-  else if sectionConflicts
-    naturalLanguageText += "<b><span class='color-red'>Unfortunately, you cannot add this section to your schedule because you have added another class at the same time.</span></b>"
 
 
   """
@@ -361,7 +383,7 @@ notify = (msg, error = false, duration) ->
 additionalCategories =
   all: 'All'
   starred: 'Starred'
-  scheduled: 'In your schedule'
+  scheduled: 'In my schedule'
 
 fillSubjectList = ->
   $subjectList = $('#subject-list ul')
@@ -432,5 +454,7 @@ $ ->
   console.log scheduleToString({'Monday': [[14.66, 16.00]], 'Friday': [[14.66, 16.00]]})
 
   refreshList allCourseIds, 'all', null
+
+
 
 
