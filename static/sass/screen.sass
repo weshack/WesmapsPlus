@@ -7,6 +7,10 @@ $header-height: 45px
 * 
   box-sizing: border-box
 
+h2.welcome
+  font-size: 36px
+  margin-bottom: 18px
+
 .relative
   position: relative
   width: 100%
@@ -17,6 +21,9 @@ html, body
   padding: 0
   overflow: hidden
   font-weight: 300
+
+h1, h2, h3, h4
+  font-family: 'Archivo Narrow', sans-serif
 
 body
   font-family: Helvetica
@@ -160,6 +167,7 @@ a:hover
     bottom: 30px
     overflow-y: scroll
     padding: 20px
+    background-color: #FEFDF9
 
 
 
@@ -229,7 +237,7 @@ a:hover
       position: absolute
       top: 6px
       //left: $subj-list-width
-      left: 153px
+      left: 140px
       margin: 0
       height: $header-height - 12
       line-height: $header-height - 12
@@ -279,7 +287,7 @@ a:hover
           box-shadow: 0 0 5px rgba(0,0,0,0.5)
 
       .day
-        width: 14.285714286%
+        width: 14.2%
         height: 100%
         display: inline-block
         border-right: 1px solid #CCC
@@ -308,7 +316,8 @@ a:hover
 
 
 .course-result-code
-  font-weight: bold 
+  color: #AAA
+  font-family: 'Archivo Narrow', sans-serif
 
 .course-result-professor
   font-size: 13px
@@ -413,7 +422,7 @@ a:hover
     position: static
 
   .day
-    width: 14.285714286%
+    width: 14.2%
     height: 100%
     display: inline-block
     border-right: 1px solid #CCC
@@ -454,10 +463,11 @@ a:hover
     margin-right: 40px
 
     h1, h3
+      font-size: 24px
       display: inline
 
     h1 
-      font-size: 35px
+      font-size: 24px
       font-weight: bold
       color: #AAA
       margin-right: 5px
@@ -516,5 +526,4 @@ footer
   cursor: pointer
   color: darkred
   &:hover
-    cursor: pointer
-    text-decoration: none  
+    text-decoration: underline  

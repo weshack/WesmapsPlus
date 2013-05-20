@@ -1,8 +1,20 @@
 <html>
 	<head>
-		<title>Wesmaps+</title>
+		<title>WesMaps+</title>
+		<link href='http://fonts.googleapis.com/css?family=Archivo+Narrow' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="/static/stylesheets/screen.css"
 		type="text/css" ></link>
+		<style type="text/css">
+			@-moz-document url-prefix() {
+			    .day {
+			        width: 13.85% !important;
+			    }
+
+			    .section-schedule .day {
+			    	width: 13.8% !important;
+			    }
+			}
+		</style>
 		<script src="/static/js/jquery-1.9.1.min.js"></script>
 		<script src="/static/js/underscore-min.js"></script>
 		<script src="/static/js/backbone-min.js"></script>
@@ -47,6 +59,9 @@
 				<ul></ul>
 			</div>
 			<div id="content">
+				<h2 class="welcome">Welcome to WesMaps+</h2>
+				<p>Start searching for courses. Star the ones you want to remember. Then visualize your schedule while you choose your classes.</p>
+				<p></p>
 				<!-- <h1><div id='course-code'></div><span id='course-name'></span></h1> -->
 				<!-- <div id='container'> -->
   				<!-- 	<button id='course-updater'></button> -->

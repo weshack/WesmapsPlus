@@ -36,6 +36,8 @@ class SectionSchedule
       $el.html('')
     courseInSchedule = false
     for course, days of @currentSchedule
+      console.log 'course is ', course
+      console.log 'candidate id ', @candidateId
       if parseInt(course) == parseInt(@candidateId)
         color = '#' + window.colors[course]
         courseInSchedule = true
