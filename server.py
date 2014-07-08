@@ -13,14 +13,15 @@ def before_request():
     g.db = connect_db()
 
 def get_all_courses(conn):
-    ret = {}
+    ret = []
     c = conn.cursor()
-    for courseid in range(int(c.execute("select COUNT(*) from courses").next()[0])):
+    for courseid in list(c.execute("select _uid from courses").fetchall()):
         #ret.append(get_all_information(conn, courseid))
-        summary = get_course_summary(conn, courseid)
-        summary['stars'] = count_stars(courseid)
-        summary['instructors'] = get_instructors_for_course(g.db, courseid)
-        ret[summary['id']] = summary
+        courseid = courseid[0]
+        summary = get_course_summary(conn, int(courseid))
+        summary['stars'] = count_stars(int(courseid))
+        summary['instructors'] = get_instructors_for_course(g.db, int(courseid))
+        ret.append(summary)
     return ret
 
 @app.route('/all')
@@ -203,7 +204,6 @@ def get_schedule():
     return simplejson.dumps( get_sections_for_user(session) )    
 	
 if __name__ == "__main__":
-    app.secret_key = 'b6a7ab74af724b1e948b42a30c959cb8'
-    app.debug = True
+    app.debug = False
     app.run(host='0.0.0.0')
 

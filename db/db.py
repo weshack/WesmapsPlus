@@ -4,7 +4,7 @@ import re
 
 
 def connect_db():
-    return sqlite3.connect('db/courses.db')
+    return sqlite3.connect('/srv/weshack/WesmapsPlus/db/courses.db')
 
 def build_course_obj(row):
     courseid = row[0]

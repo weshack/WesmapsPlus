@@ -3,7 +3,7 @@ require 'sqlite3'
 
 json_data = JSON.parse(IO.read("courses.json"))
 courses = SQLite3::Database.new("courses.db")
-courses.execute "DROP TABLE courses"
+#courses.execute "DROP TABLE courses"
 courses.execute <<-SQL
 CREATE TABLE courses (
 _uid INTEGER PRIMARY KEY,
@@ -22,7 +22,7 @@ sections TEXT
 );
 SQL
 
-courses.execute "DROP TABLE sections"
+#courses.execute "DROP TABLE sections"
 courses.execute <<-SQL
 CREATE TABLE sections (
 _uid INTEGER PRIMARY KEY,
@@ -46,7 +46,7 @@ enrollmentLimit INTEGER,
 assignments_and_examinations TEXT
 );
 SQL
-courses.execute "DROP TABLE professors"
+#courses.execute "DROP TABLE professors"
 courses.execute <<-SQL
 CREATE TABLE professors (
 _uid INTEGER PRIMARY KEY,
@@ -54,6 +54,9 @@ name TEXT,
 rating REAL
 );
 SQL
+
+
+current_semester = (if Time.now.month < 4 then "Spring" else "Fall" end)  +  " " + Time.now.year.to_s
 
 primaryKey = 0
 professor_data = JSON.parse(IO.read("professors_with_ratings.json"))
@@ -68,7 +71,7 @@ sPk = 0
 total = json_data.size
 coursesAdded = []
 json_data.each do | course |
-	if course['semester'] == "Fall 2013" and not coursesAdded.index(course['title'])
+	if course['semester'] == current_semester and not coursesAdded.index(course['title'])
 		coursesAdded << course['title']
 		courseuid = primaryKey
 		sections = ""
@@ -136,7 +139,7 @@ json_data.each do | course |
 			profs = []
 			section['instructors'].each do | prof |
 				res = courses.execute("SELECT _uid FROM professors WHERE name = \"#{prof.gsub('"',"'").gsub(',',', ')}\"")
-				profs << res[0][0].to_s if res
+				profs << res[0][0].to_s if res and res[0] and res[0][0]
 			end
 			sqlStatement << profs.join(';')
 			sqlStatement << '", "'

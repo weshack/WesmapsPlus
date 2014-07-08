@@ -12,10 +12,9 @@ subjectCodes2 = {"ARAB":"Arabic","ARHA":"Art History","ARST":"Art Studio","ALIT"
 currentCourseIds = null
 currentMode = null
 currentCourseId = null
-
+allCourseIds = []
+allCourses = []
 relevantSubjects = {}
-
-allCourseIds = _.values(allCourses).map (course) -> course.id
 
 subjectCodesReverse = {}
 
@@ -454,20 +453,16 @@ makeSampleSchedule = ->
       selectCourse 378, 'scheduled'), 1000
 
 $ ->
-  $("#course-search").on 'keyup', ->
-    updateSearchField @value
-
-  window.theSchedule = new Schedule({}, $('#schedule'))
-  getAndUpdateSchedule()
-
-  getStarredCourses()
-
-  fillSubjectList()
-
-  console.log scheduleToString({'Monday': [[14.66, 16.00]], 'Friday': [[14.66, 16.00]]})
-
-  refreshList allCourseIds, 'all', null
-
-  $("#load-sample-schedule").click ->
-    makeSampleSchedule()
+  $.getJSON('/all', (r) ->
+    allCourses = r
+    allCourseIds = allCourses.map (c) -> c.id
+    $("#course-search").on 'keyup', ->
+      updateSearchField @value
+    window.theSchedule = new Schedule({}, $('#schedule'))
+    getAndUpdateSchedule()
+    getStarredCourses()
+    fillSubjectList()
+    refreshList allCourseIds, 'all', null
+    $("#load-sample-schedule").click ->
+      makeSampleSchedule())
 
